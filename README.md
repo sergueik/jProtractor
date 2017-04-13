@@ -7,7 +7,7 @@ On the other hand Protractor offers some [locator strategies](https://github.com
 
 
 Currently supported Angular Proractor methods:
-```
+```bash
 binding.js
 buttonText.js
 evaluate.js
@@ -31,7 +31,7 @@ Building
 Windows (jdk1.7.0_65, 32 bit)
 -----------------------------
 The following commands compile the project in console.
-```
+```cmd
 set M2=c:\java\apache-maven-3.2.1\bin
 set M2_HOME=c:\java\apache-maven-3.2.1
 set MAVEN_OPTS=-Xms256m -Xmx512m
@@ -46,7 +46,7 @@ mvn clean package
 ```
 Linux
 -----
-```
+```bash
 export TRAVIS=true
 mvn clean package
 ```
@@ -57,9 +57,9 @@ Using with existing Java projects
 Maven
 -----
 
-  * Copy `target\jprotractor-1.0-SNAPSHOT.jar` to your project `src/main/resources`:
+  * Copy `target\jprotractor-1.2-SNAPSHOT.jar` to your project `src/main/resources`:
 
-```
+```bash
 +---src
     +---main
             +---java
@@ -70,12 +70,12 @@ Maven
 
 ```
   * Add reference to the project `pom.xml` (a sample project is checked in) 
-```
+```xml
 <properties>
-    <jprotractor.version>1.0-SNAPSHOT</jprotractor.version>
+  <jprotractor.version>1.2-SNAPSHOT</jprotractor.version>
 </properties>
 ```
-```
+```xml
 <dependencies>
 <dependency>
      <groupId>com.jprotractor</groupId>
@@ -87,19 +87,18 @@ Maven
 </dependencies>
 ```
   * Add reference to the code:
-```
+```java
 import com.jprotractor.NgBy;
 import com.jprotractor.NgWebDriver;
 import com.jprotractor.NgWebElement;
-  
 ```
 
 Ant
 ---
 
-* Copy the `target\jprotractor-1.0-SNAPSHOT.jar`  in the same location oher dependency jars, e.g. `c:\java\selenium`,
+* Copy the `target\jprotractor-1.2-SNAPSHOT.jar`  in the same location oher dependency jars, e.g. `c:\java\selenium`,
 * Use the bolierplate `build.xml` (a sample project is checked in) or merge with your existing build file(s):
-```
+```xml
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project name="example" basedir=".">
   <property name="build.dir" value="${basedir}/build"/>
@@ -130,21 +129,19 @@ Ant
     </testng>
   </target>
 </project>
-
 ```
 * Add reference to the code:
-```
+```java
 import com.jprotractor.NgBy;
 import com.jprotractor.NgWebDriver;
 import com.jprotractor.NgWebElement;
-
 ```
 
 Example Test
 ============
 
 For desktop browser testing, run a Selenium node and Selenium hub on port 4444 and 
-```
+```java
   @BeforeClass
   public static void setup() throws IOException {
       DesiredCapabilities capabilities =   new DesiredCapabilities("firefox", "", Platform.ANY);
@@ -187,7 +184,7 @@ For desktop browser testing, run a Selenium node and Selenium hub on port 4444 a
   }
 ```
 for CI build replace the Setup () with
-```
+```java
   @BeforeClass
   public static void setup() throws IOException {
 	  seleniumDriver = new PhantomJSDriver();
@@ -200,7 +197,7 @@ Note
 ----
 PhantomJs allows loading Angular samples from `file://` content, you need to allow some additional options if the test page loads external content:
 
-```
+```java
   DesiredCapabilities capabilities = new DesiredCapabilities("phantomjs", "", Platform.ANY);
   capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[] {
     "--web-security=false",
@@ -229,6 +226,26 @@ PhantomJs allows loading Angular samples from `file://` content, you need to all
 ```
 Certain tests ( e.g. involving `NgBy.selectedOption()` ) currently fail under [travis](https://travis-ci.org/) CI build.
 
+Selenum Version compatibility
+============================
+
+|                      |              |
+|----------------------|--------------|
+| SELENIUM_VERSION     | __2.53.1__   |
+| FIREFOX_VERSION      | __45.0.1__   |
+| CHROME_VERSION       | __56.0.X__   |
+| CHROMEDRIVER_VERSION | __2.29__     |
+
+
+|                      |              |
+|----------------------|--------------|
+| SELENIUM_VERSION     | __3.2.0__    |
+| FIREFOX_VERSION      | __52.0__     |
+| GECKODRIVER_VERSION  | __0.15__     |
+| CHROME_VERSION       | __57.0.X__   |
+| CHROMEDRIVER_VERSION | __2.29__     |
+
+
 
 Related Projects 
 ================
@@ -239,6 +256,8 @@ Related Projects
   - [sergueik/protractor-net](https://github.com/sergueik/powershell_selenium/tree/master/csharp/protractor-net)
 
 
-Author
-------
+Authors
+-------
 [Serguei Kouzmine](kouzmine_serguei@yahoo.com)
+
+[Carlos Alexandro Becker](caarlos0@gmail.com)
