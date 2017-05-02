@@ -1,7 +1,7 @@
 language: java
 script: mvn test integration-test
 addons:
-   firefox: "40.0"
+   firefox: "46.0"
 before_install:
  - "export DISPLAY=:99.0"
  - "export TRAVIS=true"
@@ -9,7 +9,7 @@ before_install:
 after_script:
 - "sh -e /etc/init.d/xvfb stop"
 jdk:
-  - oraclejdk7
+  - oraclejdk8
 notifications:
   email:
     on_success: never
