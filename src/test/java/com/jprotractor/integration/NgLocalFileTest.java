@@ -284,7 +284,7 @@ public class NgLocalFileTest {
 		}
 	}
 
-	// @Ignore
+	@Ignore
 	@Test
 	public void testUpload1() {
 		if (!isCIBuild) {
@@ -451,7 +451,7 @@ public class NgLocalFileTest {
 		assertTrue(cnt == 3);
 	}
 
-	// @Ignore
+	@Ignore
 	@Test
 	public void testFindSelectedtOptionWithAlert() {
 
@@ -688,7 +688,7 @@ public class NgLocalFileTest {
 		System.err.println("selected option: " + ngElement.getText());
 	}
 
-	// @Ignore
+	@Ignore
 	@Test
 	public void testMultiSelect2() {
 		getPageContent("ng_multi_select2.htm");
@@ -736,7 +736,7 @@ public class NgLocalFileTest {
 		}
 	}
 
-	// @Ignore
+	@Ignore
 	@Test
 	public void testMultiSelect() {
 		getPageContent("ng_multi_select.htm");
@@ -817,7 +817,7 @@ public class NgLocalFileTest {
 		System.err.println(elements.get(0).getText());
 	}
 
-	// @Ignore
+	@Ignore
 	@Test
 	public void testFindElementByOptions() {
 		if (!isCIBuild) {
@@ -1093,7 +1093,7 @@ public class NgLocalFileTest {
 	}
 
 	// TODO: separate into class AngularUISelect.java
-	// @Ignore
+	@Ignore
 	@Test
 	public void testAngularUISelectHandleSelectedAndAvailable() {
 		getPageContent("ng_ui_select_example1.htm");
@@ -1130,7 +1130,7 @@ public class NgLocalFileTest {
 		}
 	}
 
-	// @Ignore
+	@Ignore
 	@Test
 	public void testAngularUISelectHandleSearch() {
 		getPageContent("ng_ui_select_example1.htm");
@@ -1418,5 +1418,4 @@ public class NgLocalFileTest {
 		} catch (Exception e) {
 		}
 	}
-
 }
