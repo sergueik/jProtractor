@@ -305,6 +305,7 @@ public class NgLocalFileTest {
 		try {
 			Object myFile = ng_file.evaluate("myFile");
 			if (myFile instanceof Map) {
+				@SuppressWarnings("rawtypes")
 				Map<?, ?> map = (Map) (myFile);
 				for (Map.Entry<?, ?> entry : map.entrySet()) {
 					String key = entry.getKey().toString();
@@ -431,9 +432,8 @@ public class NgLocalFileTest {
 		System.err.println("Customers:" + seleniumDriver.getPageSource());
 		getPageContent("ng_service.htm");
 		ngDriver.waitForAngular();
-		ArrayList<WebElement> countries = new ArrayList<>(
-				ngDriver.findElements(
-						NgBy.repeaterColumn("person in people", "person.Country")));
+		ArrayList<WebElement> countries = new ArrayList<>(ngDriver.findElements(
+				NgBy.repeaterColumn("person in people", "person.Country")));
 		System.err.println("Found Countries.size() = " + countries.size());
 		assertTrue(countries.size() > 0);
 		Iterator<WebElement> countriesIterator = countries.iterator();
@@ -1115,7 +1115,7 @@ public class NgLocalFileTest {
 				.findElements(By.cssSelector("div[role='option']"));
 		Iterator<WebElement> iteratorAvailableColors = availableColors.iterator();
 		while (iteratorAvailableColors.hasNext()) {
-			WebElement availableColor =iteratorAvailableColors.next();
+			WebElement availableColor = iteratorAvailableColors.next();
 			NgWebElement ngAvailableColor = new NgWebElement(ngDriver,
 					availableColor);
 			highlight(availableColor);

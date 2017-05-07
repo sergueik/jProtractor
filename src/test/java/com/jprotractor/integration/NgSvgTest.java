@@ -106,8 +106,8 @@ public class NgSvgTest {
 		// return;
 		// }
 		getPageContent("ng_svg_ex1.htm");
-		Enumeration<WebElement> circles = Collections.enumeration(ngDriver
-				.findElements(NgBy.repeater("circle in circles")));
+		Enumeration<WebElement> circles = Collections
+				.enumeration(ngDriver.findElements(NgBy.repeater("circle in circles")));
 		while (circles.hasMoreElements()) {
 			WebElement circle = circles.nextElement();
 			// if (circle.getText().isEmpty()){
@@ -125,8 +125,8 @@ public class NgSvgTest {
 			System.err.println(sb.toString());
 			sb.setLength(0);
 			try {
-				WebElement element = seleniumDriver.findElement(By
-						.xpath(xpath_of(circle)));
+				WebElement element = seleniumDriver
+						.findElement(By.xpath(xpath_of(circle)));
 				System.err.println("Located by xpath " + xpath_of(circle));
 				formatter.format("Location: x = %3d", element.getLocation().x);
 				formatter.format(" y = %3d", element.getLocation().y);
@@ -138,19 +138,18 @@ public class NgSvgTest {
 				System.err.println("Cannot locate by xpath: " + xpath_of(circle));
 			}
 			try {
-				WebElement element = seleniumDriver.findElement(By
-						.cssSelector(css_selector_of(circle)));
+				WebElement element = seleniumDriver
+						.findElement(By.cssSelector(css_selector_of(circle)));
 				System.err.println("Located by cssSelector " + css_selector_of(circle));
 				highlight(element);
 				System.err.println("innerHTML:" + element.getAttribute("innerHTML"));
 				// WebDriverException: cannot forward the request Software caused
 				// connection abort
-				System.err.println("Fill: "
-						+ CommonFunctions.executeScript(
-								"return arguments[0].getAttribute('fill')", element));
+				System.err.println("Fill: " + CommonFunctions.executeScript(
+						"return arguments[0].getAttribute('fill')", element));
 			} catch (NoSuchElementException ex) {
-				System.err.println("Cannot locate by cssSelector: "
-						+ css_selector_of(circle));
+				System.err.println(
+						"Cannot locate by cssSelector: " + css_selector_of(circle));
 			}
 		}
 		Thread.sleep(1000);
@@ -169,7 +168,8 @@ public class NgSvgTest {
 		Thread.sleep(500);
 	}
 
-	private static void highlight(WebElement element) throws InterruptedException {
+	private static void highlight(WebElement element)
+			throws InterruptedException {
 		CommonFunctions.highlight(element);
 	}
 
@@ -187,18 +187,15 @@ public class NgSvgTest {
 				+ "         return '//' + elementTagName + '[@id=\"' + element.id + '\"]';\n"
 				+ "     } else if (element.name && document.getElementsByName(element.name).length === 1) {\n"
 				+ "         return '//' + elementTagName + '[@name=\"' + element.name + '\"]';\n"
-				+ "     }\n"
-				+ "     if (element === document.body) {\n"
-				+ "         return '/html/' + elementTagName;\n"
-				+ "     }\n"
+				+ "     }\n" + "     if (element === document.body) {\n"
+				+ "         return '/html/' + elementTagName;\n" + "     }\n"
 				+ "     var sibling_count = 0;\n"
 				+ "     var siblings = element.parentNode.childNodes;\n"
 				+ "     siblings_length = siblings.length;\n"
 				+ "     for (cnt = 0; cnt < siblings_length; cnt++) {\n"
 				+ "         var sibling_element = siblings[cnt];\n"
 				+ "         if (sibling_element.nodeType !== 1) { // not ELEMENT_NODE\n"
-				+ "             continue;\n"
-				+ "         }\n"
+				+ "             continue;\n" + "         }\n"
 				+ "         if (sibling_element === element) {\n"
 				+ "             return sibling_count > 0 ? get_xpath_of(element.parentNode) + '/*[name() = \"'+ elementTagName+ '\"]' + '[' + (sibling_count + 1) + ']' : get_xpath_of(element.parentNode) + '/*[name() = \"'+ elementTagName+ '\"]' ;\n"
 				+ "         }\n"
@@ -210,22 +207,15 @@ public class NgSvgTest {
 
 	private static String css_selector_of(WebElement element) {
 		String script = "function get_css_selector_of(element) {\n"
-				+ "if (!(element instanceof Element))\n"
-				+ "return;\n"
+				+ "if (!(element instanceof Element))\n" + "return;\n"
 				+ "var path = [];\n"
 				+ "while (element.nodeType === Node.ELEMENT_NODE) {\n"
 				+ "var selector = element.nodeName.toLowerCase();\n"
-				+ "if (element.id) {\n"
-				+ "if (element.id.indexOf('-') > -1) {\n"
-				+ "selector += '[id = \"' + element.id + '\"]';\n"
-				+ "} else {\n"
-				+ "selector += '#' + element.id;\n"
-				+ "}\n"
-				+ "path.unshift(selector);\n"
-				+ "break;\n"
-				+ "} else {\n"
-				+ "var element_sibling = element;\n"
-				+ "var sibling_cnt = 1;\n"
+				+ "if (element.id) {\n" + "if (element.id.indexOf('-') > -1) {\n"
+				+ "selector += '[id = \"' + element.id + '\"]';\n" + "} else {\n"
+				+ "selector += '#' + element.id;\n" + "}\n"
+				+ "path.unshift(selector);\n" + "break;\n" + "} else {\n"
+				+ "var element_sibling = element;\n" + "var sibling_cnt = 1;\n"
 				+ "while (element_sibling = element_sibling.previousElementSibling) {\n"
 				+ "if (element_sibling.nodeName.toLowerCase() == selector)\n"
 				+ "sibling_cnt++;\n" + "}\n" + "if (sibling_cnt != 1)\n"

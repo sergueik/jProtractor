@@ -114,15 +114,15 @@ public class NgSliderTest {
 		ngDriver.waitForAngular();
 		// leads to org.openqa.selenium.WebDriverException: angular is not defined
 		// in the
-		List<WebElement> sliderElements = ngDriver.findElements(NgBy
-				.model("demoVals.sliderExample1"));
+		List<WebElement> sliderElements = ngDriver
+				.findElements(NgBy.model("demoVals.sliderExample1"));
 
 		WebElement sliderContainerElement = sliderElements.get(0);
 		assertThat(sliderContainerElement.getTagName(), equalTo("div"));
 		highlight(sliderContainerElement);
 		CommonFunctions.setHighlightTimeout(10);
-		WebElement sliderElement = sliderContainerElement.findElement(By
-				.className("ui-slider-handle"));
+		WebElement sliderElement = sliderContainerElement
+				.findElement(By.className("ui-slider-handle"));
 		for (int cnt = 0; cnt != 10; cnt++) {
 			sliderElement.sendKeys(Keys.ARROW_RIGHT);
 			highlight(sliderElement);
@@ -146,16 +146,16 @@ public class NgSliderTest {
 			return;
 		}
 		ngDriver.waitForAngular();
-		List<WebElement> sliderElements = ngDriver.findElements(NgBy
-				.model("demoVals.sliderExample1"));
+		List<WebElement> sliderElements = ngDriver
+				.findElements(NgBy.model("demoVals.sliderExample1"));
 		WebElement sliderContainerElement = sliderElements.get(0);
 		assertThat(sliderContainerElement.getTagName(), equalTo("div"));
 		Dimension dimension = sliderContainerElement.getSize();
 		int width = dimension.width;
 		// System.err.println("width = " + width);
 		highlight(sliderContainerElement);
-		WebElement sliderElement = sliderContainerElement.findElement(By
-				.className("ui-slider-handle"));
+		WebElement sliderElement = sliderContainerElement
+				.findElement(By.className("ui-slider-handle"));
 		// actions.dragAndDropBy(sliderElement, 100, 0).build().perform();
 		// has no effect
 		for (int cnt = 0; cnt != 10; cnt++) {
@@ -179,7 +179,8 @@ public class NgSliderTest {
 		seleniumDriver.quit();
 	}
 
-	private static void highlight(WebElement element) throws InterruptedException {
+	private static void highlight(WebElement element)
+			throws InterruptedException {
 		CommonFunctions.highlight(element);
 	}
 }

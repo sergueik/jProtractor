@@ -77,89 +77,101 @@ public class NgButtonTest {
 	static int width = 600;
 	static int height = 400;
 	// set to true for Desktop, false for headless browser testing
-	static boolean isCIBuild =  false;
+	static boolean isCIBuild = false;
 	public static String localFile;
 
 	@BeforeClass
 	public static void setup() throws IOException {
 		isCIBuild = CommonFunctions.checkEnvironment();
 		seleniumDriver = CommonFunctions.getSeleniumDriver();
-		seleniumDriver.manage().window().setSize(new Dimension(width , height ));
-		seleniumDriver.manage().timeouts().pageLoadTimeout(50, TimeUnit.SECONDS).implicitlyWait(implicitWait, TimeUnit.SECONDS).setScriptTimeout(10, TimeUnit.SECONDS);
-		wait = new WebDriverWait(seleniumDriver, flexibleWait );
-		wait.pollingEvery(pollingInterval,TimeUnit.MILLISECONDS);
-		actions = new Actions(seleniumDriver);		
+		seleniumDriver.manage().window().setSize(new Dimension(width, height));
+		seleniumDriver.manage().timeouts().pageLoadTimeout(50, TimeUnit.SECONDS)
+				.implicitlyWait(implicitWait, TimeUnit.SECONDS)
+				.setScriptTimeout(10, TimeUnit.SECONDS);
+		wait = new WebDriverWait(seleniumDriver, flexibleWait);
+		wait.pollingEvery(pollingInterval, TimeUnit.MILLISECONDS);
+		actions = new Actions(seleniumDriver);
 		ngDriver = new NgWebDriver(seleniumDriver);
 	}
 
-
 	@Test
 	public void testButtonNgIf() throws Exception {
-		//if (isCIBuild) { // Alert not handled by PhantomJS
-		//	return;
-		//}
-		getPageContent("ng_watch_ng_if.htm");		
+		// if (isCIBuild) { // Alert not handled by PhantomJS
+		// return;
+		// }
+		getPageContent("ng_watch_ng_if.htm");
 
-		WebElement button = seleniumDriver.findElement(By.cssSelector("button.btn"));
+		WebElement button = seleniumDriver
+				.findElement(By.cssSelector("button.btn"));
 		ngDriver.waitForAngular();
 		highlight(button);
 		NgWebElement ng_button = new NgWebElement(ngDriver, button);
 		assertThat(ng_button, notNullValue());
-		assertThat(ng_button.getAttribute("ng-click"), equalTo("house.frontDoor.open()"));
-		assertThat(ng_button.getText(), equalTo("Open Door"));		 
+		assertThat(ng_button.getAttribute("ng-click"),
+				equalTo("house.frontDoor.open()"));
+		assertThat(ng_button.getText(), equalTo("Open Door"));
 		ngDriver.waitForAngular();
-		try {		    
-			state = ((Boolean) ng_button.evaluate("!house.frontDoor.isOpen")).booleanValue(); 
-		} catch(Exception ex) { 
-			System.err.println("evaluate was not handled : " + ex.getStackTrace().toString());
+		try {
+			state = ((Boolean) ng_button.evaluate("!house.frontDoor.isOpen"))
+					.booleanValue();
+		} catch (Exception ex) {
+			System.err.println(
+					"evaluate was not handled : " + ex.getStackTrace().toString());
 		}
 		assertTrue(state);
 		button.click();
-		try{
+		try {
 			// confirm alert
 			seleniumDriver.switchTo().alert().accept();
-		} catch (NoAlertPresentException ex){
-			// Alert not present - ignore			
-		} catch(WebDriverException ex){			
-			System.err.println("Alert was not handled : " + ex.getStackTrace().toString());
+		} catch (NoAlertPresentException ex) {
+			// Alert not present - ignore
+		} catch (WebDriverException ex) {
+			System.err
+					.println("Alert was not handled : " + ex.getStackTrace().toString());
 			return;
 		}
 		button = seleniumDriver.findElement(By.cssSelector("button.btn"));
 		highlight(button);
 		ng_button = new NgWebElement(ngDriver, button);
 		assertThat(ng_button, notNullValue());
-		assertThat(ng_button.getAttribute("ng-click"), equalTo("house.frontDoor.close()"));
-		assertThat(ng_button.getText(), equalTo("Close Door"));		
-		try {			
-			state = ((Boolean) ng_button.evaluate("house.frontDoor.isOpen")).booleanValue(); 
-		} catch(Exception ex) { 
+		assertThat(ng_button.getAttribute("ng-click"),
+				equalTo("house.frontDoor.close()"));
+		assertThat(ng_button.getText(), equalTo("Close Door"));
+		try {
+			state = ((Boolean) ng_button.evaluate("house.frontDoor.isOpen"))
+					.booleanValue();
+		} catch (Exception ex) {
 			// [JavaScript Error: "e is null"] ?
-			System.err.println("evaluate was not handled : " + ex.getStackTrace().toString());
+			System.err.println(
+					"evaluate was not handled : " + ex.getStackTrace().toString());
 		}
 		assertTrue(state);
 	}
-	
+
 	@Test
 	public void testButtonStateText() throws Exception {
-		//if (isCIBuild) { // Alert not handled by PhantomJS
-		//	return;
-		//}
-		getPageContent("ng_watch_ng_if.htm");				
-		WebElement button = seleniumDriver.findElement(By.cssSelector("button.btn"));
+		// if (isCIBuild) { // Alert not handled by PhantomJS
+		// return;
+		// }
+		getPageContent("ng_watch_ng_if.htm");
+		WebElement button = seleniumDriver
+				.findElement(By.cssSelector("button.btn"));
 		ngDriver.waitForAngular();
 		highlight(button);
-		NgWebElement ng_status = ngDriver.findElement(NgBy.binding("house.frontDoor.isOpen"));
+		NgWebElement ng_status = ngDriver
+				.findElement(NgBy.binding("house.frontDoor.isOpen"));
 		highlight(ng_status);
 		assertTrue(ng_status.getText().matches("The door is closed"));
 		System.err.println("Initially: " + ng_status.getText());
 		button.click();
-		try{
+		try {
 			// confirm alert
 			seleniumDriver.switchTo().alert().accept();
-		} catch (NoAlertPresentException ex){
-			// Alert not present - ignore			
-		} catch(WebDriverException ex){			
-			System.err.println("Alert was not handled : " + ex.getStackTrace().toString());
+		} catch (NoAlertPresentException ex) {
+			// Alert not present - ignore
+		} catch (WebDriverException ex) {
+			System.err
+					.println("Alert was not handled : " + ex.getStackTrace().toString());
 			return;
 		}
 		ng_status = ngDriver.findElement(NgBy.binding("house.frontDoor.isOpen"));
@@ -171,16 +183,18 @@ public class NgButtonTest {
 	@AfterClass
 	public static void teardown() {
 		ngDriver.close();
-		seleniumDriver.quit();		
+		seleniumDriver.quit();
 	}
 
-	private static void getPageContent(String pagename) throws InterruptedException{
-		String baseUrl = CommonFunctions.getPageContent(pagename) ;
+	private static void getPageContent(String pagename)
+			throws InterruptedException {
+		String baseUrl = CommonFunctions.getPageContent(pagename);
 		ngDriver.navigate().to(baseUrl);
 		Thread.sleep(500);
 	}
 
-	private static void highlight(WebElement element) throws InterruptedException {
+	private static void highlight(WebElement element)
+			throws InterruptedException {
 		CommonFunctions.highlight(element);
 	}
 }

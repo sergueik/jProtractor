@@ -102,8 +102,8 @@ public class NgQualityShepherdTest {
 
 	@Before
 	public void beforeEach() {
-    // TODO: investigate the failure under TRAVIS 
-    assumeFalse(isCIBuild);
+		// TODO: investigate the failure under TRAVIS
+		assumeFalse(isCIBuild);
 		ngDriver.navigate().to(baseUrl);
 	}
 
@@ -126,8 +126,9 @@ public class NgQualityShepherdTest {
 		assertThat(ngDriver.findElements(NgBy.repeater("row in rows")).size()
 				- friendCount, equalTo(1));
 		// And we can find the new friend using search
-		WebElement addedFriendElement = ngDriver.findElements(
-				NgBy.cssContainingText("td.ng-binding", friendName)).get(0);
+		WebElement addedFriendElement = ngDriver
+				.findElements(NgBy.cssContainingText("td.ng-binding", friendName))
+				.get(0);
 		assertThat(addedFriendElement, notNullValue());
 		highlight(addedFriendElement);
 		System.err.println("Added friend name: " + addedFriendElement.getText());
@@ -136,23 +137,23 @@ public class NgQualityShepherdTest {
 	@Test
 	public void testSearchAndDeleteFriend() {
 		// Given we pick friend to delete
-		List<WebElement> friendNames = ngDriver.findElements(NgBy.repeaterColumn(
-				"row in rows", "row"));
+		List<WebElement> friendNames = ngDriver
+				.findElements(NgBy.repeaterColumn("row in rows", "row"));
 		WebElement friendName = friendNames.get(0);
 		highlight(friendName);
 		String deleteFriendName = friendName.getText();
 		assertFalse(deleteFriendName.isEmpty());
 		// When we delete every friend with the chosen name
-		Iterator<WebElement> friendRows = ngDriver.findElements(
-				NgBy.repeater("row in rows")).iterator();
+		Iterator<WebElement> friendRows = ngDriver
+				.findElements(NgBy.repeater("row in rows")).iterator();
 		while (friendRows.hasNext()) {
 			WebElement currentfriendRow = friendRows.next();
 			WebElement currentfriendName = new NgWebElement(ngDriver,
 					currentfriendRow).findElement(NgBy.binding("row"));
 			if (currentfriendName.getText().indexOf(deleteFriendName) >= 0) {
 				System.err.println("Delete: " + currentfriendName.getText());
-				WebElement deleteButton = currentfriendRow.findElement(By
-						.cssSelector("i.icon-trash"));
+				WebElement deleteButton = currentfriendRow
+						.findElement(By.cssSelector("i.icon-trash"));
 				highlight(deleteButton);
 				deleteButton.click();
 				ngDriver.waitForAngular();
@@ -171,9 +172,10 @@ public class NgQualityShepherdTest {
 		System.err.println("Clear Search");
 		clearSearchBox.click();
 		ngDriver.waitForAngular();
-		// And the deleted friend cannot be found by looking at the remaining friend names
-		List<WebElement> elements = ngDriver.findElements(NgBy.cssContainingText(
-				"td.ng-binding", deleteFriendName));
+		// And the deleted friend cannot be found by looking at the remaining friend
+		// names
+		List<WebElement> elements = ngDriver.findElements(
+				NgBy.cssContainingText("td.ng-binding", deleteFriendName));
 		assertTrue(elements.size() == 0);
 		// examine remaining friends
 		friendRows = ngDriver.findElements(NgBy.repeater("row in rows")).iterator();
@@ -192,8 +194,8 @@ public class NgQualityShepherdTest {
 	@Test
 	public void testRemoveAllFriends() {
 		ngDriver.waitForAngular();
-		List<WebElement> elements = ngDriver.findElements(NgBy
-				.repeater("row in rows"));
+		List<WebElement> elements = ngDriver
+				.findElements(NgBy.repeater("row in rows"));
 		assertTrue(elements.size() != 0);
 	}
 

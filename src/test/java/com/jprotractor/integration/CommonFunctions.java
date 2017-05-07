@@ -69,7 +69,7 @@ public class CommonFunctions {
 			// port 4444
 			// For Vagrant box browser testing have localhost port 4444 forwarded to
 			// the hub 4444
-      // Alternatively make the test class launch the browser
+			// Alternatively make the test class launch the browser
 
 			if (browser.equals("chrome")) {
 				System.setProperty("webdriver.chrome.driver",

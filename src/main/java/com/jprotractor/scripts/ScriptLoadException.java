@@ -26,5 +26,6 @@ public final class ScriptLoadException extends RuntimeException {
 	public ScriptLoadException(final String filename) {
 		super(String.format(ScriptLoadException.MESSAGE, filename));
 	}
-	private static final long serialVersionUID = 10	;
+
+	private static final long serialVersionUID = 10;
 }
