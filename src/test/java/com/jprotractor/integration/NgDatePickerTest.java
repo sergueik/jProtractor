@@ -125,7 +125,6 @@ public class NgDatePickerTest {
 					Boolean result = false;
 					WebElement element = null;
 					while (elements.hasNext() && !result) {
-						element = (WebElement) elements.next();
 						String text = element.getText();
 						result = text.contains(searchText);
 					}
@@ -210,7 +209,7 @@ public class NgDatePickerTest {
 					Boolean result = false;
 					WebElement element = null;
 					while (elements.hasNext() && !result) {
-						element = (WebElement) elements.next();
+						element = elements.next();
 						String text = element.getText();
 						// System.err.println("got: " + text);
 						result = text.contains(searchText);
@@ -288,7 +287,7 @@ public class NgDatePickerTest {
 					Boolean result = false;
 					WebElement element = null;
 					while (elements.hasNext() && !result) {
-						element = (WebElement) elements.next();
+						element = elements.next();
 						String text = element.getText();
 						// System.err.println("got: " + text);
 						result = text.contains(searchText);

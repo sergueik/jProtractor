@@ -195,7 +195,7 @@ public class NgWay2AutomationIntegrationTest {
 		highlight(currency);
 
 		// And I can switch to any of my accounts
-		ArrayList<String> avaliableAccounts = new ArrayList<String>();
+		ArrayList<String> avaliableAccounts = new ArrayList<>();
 		Enumeration<WebElement> accounts = Collections.enumeration(
 				ngDriver.findElements(NgBy.options("account for account in Accounts")));
 
@@ -274,7 +274,7 @@ public class NgWay2AutomationIntegrationTest {
 				.findElements(NgBy.repeater("tx in transactions")).iterator();
 		int cnt = 0;
 		while (transactions.hasNext() && cnt++ < 5) {
-			WebElement currentTransaction = (WebElement) transactions.next();
+			WebElement currentTransaction = transactions.next();
 			NgWebElement ngCurrentTransaction = new NgWebElement(ngDriver,
 					currentTransaction);
 			assertTrue(ngCurrentTransaction.evaluate("tx.amount").toString()
@@ -478,8 +478,7 @@ public class NgWay2AutomationIntegrationTest {
 				.findElements(NgBy.repeaterColumn("tx in transactions", "tx.type"))
 				.iterator();
 		while (transactionTypeColumns.hasNext()) {
-			WebElement transactionTypeColumn = (WebElement) transactionTypeColumns
-					.next();
+			WebElement transactionTypeColumn = transactionTypeColumns.next();
 			if (transactionTypeColumn.getText().isEmpty()) {
 				break;
 			}
@@ -490,6 +489,7 @@ public class NgWay2AutomationIntegrationTest {
 	}
 
 	// @Ignore
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testAddCustomer() throws Exception {
 		if (isCIBuild) {
