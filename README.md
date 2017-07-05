@@ -25,31 +25,54 @@ testForAngular.js
 waitForAngular.js
 ```
 
+Building the jar
+===============
 
-Building
-========
+You can build the `jprotractor.jar` from the source by cloning the repository
+```bash
+git clone https://github.com/sergueik/jProtractor
+```
+and running the following in console:
+
 Windows (jdk1.7.0_65, 32 bit)
 -----------------------------
-The following commands compile the project in console.
 ```cmd
 set M2=c:\java\apache-maven-3.2.1\bin
 set M2_HOME=c:\java\apache-maven-3.2.1
 set MAVEN_OPTS=-Xms256m -Xmx512m
-set JAVA_HOME=c:\java\jdk1.7.0_65
-set JAVA_VERSION=1.7.0_65
+set JAVA_VERSION=1.8.0_112
+set JAVA_HOME=c:\java\jdk%JAVA_VERSION%
 PATH=%JAVA_HOME%\bin;%PATH%;%M2%
 REM
 REM move %USERPROFILE%\.M2 %USERPROFILE%\.M2.MOVED
 REM rd /s/q %USERPROFILE%\.M2
 set TRAVIS=true
-mvn clean package
+mvn -Dmaven.test.skip=true clean package
 ```
 Linux
 -----
 ```bash
 export TRAVIS=true
+mvn -Dmaven.test.skip=true clean package
+```
+
+The project contains substantial number of 'integration tests' and by default maven will run all, which will take quite some time,
+also some of the tests could fail in your environment.
+After a test failure, maven will not package the jar.
+
+Alternatively you can temporarily remove the `src/test/java` directory from the project:
+```bash
+rm -f -r src/test/java
 mvn clean package
 ```
+
+The jar will be in the `target` folder:
+```cmd
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ jprotractor ---
+[INFO] Building jar: C:\developer\sergueik\jProtractor\target\jprotractor-1.2-SNAPSHOT.jar
+```
+You can install it into your local `.m2` repository as  explained below
+
 
 Using with existing Java projects
 =================================
