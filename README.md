@@ -1,15 +1,81 @@
+### Info
 
-Info
-====
+Being  aThe [__Angular Protractor__](https://github.com/angular/protractor) is a very popular Selenium Web Driver based project.
+However being a Javascript testing tool, __Protractor__ enforces one to (re)write the whole test suite in Javascript which some may find not acceptable solution.
 
-Being  a JS testing tool, [Angular Protractor](https://github.com/angular/protractor) enforces one to (re)write the web page tests in Javascript - this project (and the sibling [C# Protractor Client Framework](https://github.com/sergueik/powershell_selenium/tree/master/csharp/protractor-net)) tries to make such switch unnecessary.
-On the other hand Protractor offers some [locator strategies](https://github.com/angular/protractor/blob/master/lib/clientsidescripts.js) that take advantage of Angular's features to testers - this project tries to keep these available.
+This project and the sibling [C# Protractor Client Framework](https://github.com/sergueik/powershell_selenium/tree/master/csharp/protractor-net) tries to make such conversion unnecessary.
+
+On the other hand __Angular 1.x__  a.k.a. __AngularJS__ offered unique features: `ng-repeat` and `ng_model`,
+which __Protractor__ takes advantage of by providing unique MVC-style [locator strategies](http://www.protractortest.org/#/api?view=ProtractorBy)
+
+The __jProtractor__ project makes these, plus few extra, locator extensions available to Java:
 
 
-Currently supported Angular Proractor methods:
+```javascript
+findBindings = function(binding, exactMatch, using, rootSelector)
+```
+finds a list of elements in the page by their `angular` binding
+```javascript
+findByButtonText = function(searchText, using)
+```
+finds buttons by textual content
+```javascript
+findByCssContainingText = function(cssSelector, searchText, using)
+```
+finds elements by css selector and textual content
+```javascript
+findByModel = function(model, using, rootSelector)
+```
+finds elements by model name
+```javascript
+findByOptions = function(options, using)
+```
+finds elements by options
+```javascript
+findByPartialButtonText = function(searchText, using)
+```
+finds button(s) by textual content fragment
+```javascript
+findAllRepeaterRows = function(using, repeater)
+```
+finds an array of elements matching a row within an `ng-repeat`
+```javascript
+findRepeaterColumn = function(repeater, exact, binding, using, rootSelector)
+```
+finds the elements in a column of an `ng-repeat`
+```javascript
+findRepeaterElement = function(repeater, exact, index, binding, using, rootSelector)
+```
+finds an element within an `ng-repeat` by its row and column.
+```javascript
+findSelectedOption = function(model, using)
+```
+finds the selected option elements by model name (Angular 1.x).
+```javascript
+findSelectedRepeaterOption = function(repeater, using)
+```
+finds selected option elements in the select implemented via repeater without a model.
+```javascript
+TestForAngular = function(attempts)
+```
+tests whether the angular global variable is present on a page
+```javascript
+waitForAngular = function(rootSelector, callback)
+```
+waits until Angular has finished rendering
+```javascript
+return angular.element(element).scope().$eval(expression)
+```
+evaluates an Angular expression in the context of a given element.
+
+These are 
+implemented in a form of Javascript snippets, one file per method, 
+borrowed from __Protractor__  project's [clientsidescripts.js](https://github.com/angular/protractor/blob/master/lib/clientsidescripts.js)
+and can be found in the `src/main/java/resources` directory:
 ```bash
 binding.js
 buttonText.js
+cssContainingText.js
 evaluate.js
 getLocationAbsUrl.js
 model.js
@@ -21,149 +87,19 @@ repeaterElement.js
 repeaterRows.js
 resumeAngularBootstrap.js
 selectedOption.js
+selectedRepeaterOption.js
 testForAngular.js
 waitForAngular.js
 ```
+Majority of __AngularJS__-specific locators [aren't any longer supported](https://stackoverflow.com/questions/36201691/protractor-angular-2-failed-unknown-error-angular-is-not-defined) by __Angular 2__.
+The __E2E_Tests__ section of the [document](https://angular.io/guide/upgrade) covers the migration.
 
-Building the jar
-===============
+The standard pure Java Selenium locators are also supported.
 
-You can build the `jprotractor.jar` from the source by cloning the repository
-```bash
-git clone https://github.com/sergueik/jProtractor
-```
-and running the following in console:
+### Example Tests
+There is a big number of examples in  [`src/test/java/com/jprotractor/integration`](https://github.com/sergueik/jProtractor/tree/master/src/test/java/com/jprotractor/integration) directory.
 
-Windows (jdk1.7.0_65, 32 bit)
------------------------------
-```cmd
-set M2=c:\java\apache-maven-3.2.1\bin
-set M2_HOME=c:\java\apache-maven-3.2.1
-set MAVEN_OPTS=-Xms256m -Xmx512m
-set JAVA_VERSION=1.8.0_112
-set JAVA_HOME=c:\java\jdk%JAVA_VERSION%
-PATH=%JAVA_HOME%\bin;%PATH%;%M2%
-REM
-REM move %USERPROFILE%\.M2 %USERPROFILE%\.M2.MOVED
-REM rd /s/q %USERPROFILE%\.M2
-set TRAVIS=true
-mvn -Dmaven.test.skip=true clean package
-```
-Linux
------
-```bash
-export TRAVIS=true
-mvn -Dmaven.test.skip=true clean package
-```
-
-The project contains substantial number of 'integration tests' and by default maven will run all, which will take quite some time,
-also some of the tests could fail in your environment.
-After a test failure, maven will not package the jar.
-
-Alternatively you can temporarily remove the `src/test/java` directory from the project:
-```bash
-rm -f -r src/test/java
-mvn clean package
-```
-
-The jar will be in the `target` folder:
-```cmd
-[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ jprotractor ---
-[INFO] Building jar: C:\developer\sergueik\jProtractor\target\jprotractor-1.2-SNAPSHOT.jar
-```
-You can install it into your local `.m2` repository as  explained below
-
-
-Using with existing Java projects
-=================================
-
-Maven
------
-
-  * Copy `target\jprotractor-1.2-SNAPSHOT.jar` to your project `src/main/resources`:
-
-```bash
-+---src
-    +---main
-            +---java
-            |   +---com
-            |       +---mycompany
-            |           +---app
-            +---resources
-
-```
-  * Add reference to the project `pom.xml` (a sample project is checked in) 
-```xml
-<properties>
-  <jprotractor.version>1.2-SNAPSHOT</jprotractor.version>
-</properties>
-```
-```xml
-<dependencies>
-<dependency>
-     <groupId>com.jprotractor</groupId>
-     <artifactId>jprotractor</artifactId>
-     <version>${jprotractor.version}</version>
-     <scope>system</scope>
-     <systemPath>${project.basedir}/src/main/resources/jprotractor-${jprotractor.version}.jar</systemPath>
-</dependency>
-</dependencies>
-```
-  * Add reference to the code:
-```java
-import com.jprotractor.NgBy;
-import com.jprotractor.NgWebDriver;
-import com.jprotractor.NgWebElement;
-```
-
-Ant
----
-
-* Copy the `target\jprotractor-1.2-SNAPSHOT.jar`  in the same location oher dependency jars, e.g. `c:\java\selenium`,
-* Use the bolierplate `build.xml` (a sample project is checked in) or merge with your existing build file(s):
-```xml
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project name="example" basedir=".">
-  <property name="build.dir" value="${basedir}/build"/>
-  <property name="selenium.jars" value="c:/java/selenium"/>
-  <property name="src.dir" value="${basedir}/src"/>
-  <target name="loadTestNG" depends="setClassPath">
-    <taskdef resource="testngtasks" classpath="${test.classpath}"/>
-  </target>
-  <target name="setClassPath">
-    <path id="classpath_jars">
-      <pathelement path="${basedir}/"/>
-      <fileset dir="${selenium.jars}" includes="*.jar"/>
-    </path>
-    <pathconvert pathsep=";" property="test.classpath" refid="classpath_jars"/>
-  </target>
-  <target name="clean">
-    <delete dir="${build.dir}"/>
-  </target>
-  <target name="compile" depends="clean,setClassPath,loadTestNG">
-    <mkdir dir="${build.dir}"/>
-    <javac destdir="${build.dir}" srcdir="${src.dir}">
-      <classpath refid="classpath_jars"/>
-    </javac>
-  </target>
-  <target name="test" depends="compile">
-    <testng classpath="${test.classpath};${build.dir}">
-      <xmlfileset dir="${basedir}" includes="testng.xml"/>
-    </testng>
-  </target>
-</project>
-```
-* Add reference to the code:
-```java
-import com.jprotractor.NgBy;
-import com.jprotractor.NgWebDriver;
-import com.jprotractor.NgWebElement;
-```
-
-Example Test
-============
-
-For desktop browser testing, run a Selenium node and Selenium hub on port 4444 and 
+For desktop browser testing, run a Selenium node and Selenium hub on port 4444 and
 ```java
   @BeforeClass
   public static void setup() throws IOException {
@@ -216,8 +152,7 @@ for CI build replace the Setup () with
 ```
 
 
-Note
-----
+### Note
 PhantomJs allows loading Angular samples from `file://` content, you need to allow some additional options if the test page loads external content:
 
 ```java
@@ -249,8 +184,7 @@ PhantomJs allows loading Angular samples from `file://` content, you need to all
 ```
 Certain tests ( e.g. involving `NgBy.selectedOption()` ) currently fail under [travis](https://travis-ci.org/) CI build.
 
-Selenum Version compatibility
-============================
+### Selenum Version compatibility
 
 |                      |              |
 |----------------------|--------------|
@@ -258,7 +192,6 @@ Selenum Version compatibility
 | FIREFOX_VERSION      | __45.0.1__   |
 | CHROME_VERSION       | __56.0.X__   |
 | CHROMEDRIVER_VERSION | __2.29__     |
-
 
 |                      |              |
 |----------------------|--------------|
@@ -270,17 +203,141 @@ Selenum Version compatibility
 
 
 
-Related Projects 
-================
+### Building the jar
+
+You can build the `jprotractor.jar` from the source by cloning the repository
+```bash
+git clone https://github.com/sergueik/jProtractor
+```
+and running the following in console:
+
+#### Windows (jdk1.7.0_65, 32 bit)
+```cmd
+set M2=c:\java\apache-maven-3.2.1\bin
+set M2_HOME=c:\java\apache-maven-3.2.1
+set MAVEN_OPTS=-Xms256m -Xmx512m
+set JAVA_VERSION=1.8.0_112
+set JAVA_HOME=c:\java\jdk%JAVA_VERSION%
+PATH=%JAVA_HOME%\bin;%PATH%;%M2%
+REM
+REM move %USERPROFILE%\.M2 %USERPROFILE%\.M2.MOVED
+REM rd /s/q %USERPROFILE%\.M2
+set TRAVIS=true
+mvn -Dmaven.test.skip=true clean package
+```
+#### Linux
+```bash
+export TRAVIS=true
+mvn -Dmaven.test.skip=true clean package
+```
+
+The project contains substantial number of 'integration tests' and by default maven will run all, which will take quite some time,
+also some of the tests could fail in your environment.
+After a test failure, maven will not package the jar.
+
+Alternatively you can temporarily remove the `src/test/java` directory from the project:
+```bash
+rm -f -r src/test/java
+mvn clean package
+```
+
+The jar will be in the `target` folder:
+```cmd
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ jprotractor ---
+[INFO] Building jar: C:\developer\sergueik\jProtractor\target\jprotractor-1.2-SNAPSHOT.jar
+```
+You can install it into your local `.m2` repository as  explained below
+
+
+### Using with existing Java projects
+
+#### Maven
+  * Copy `target\jprotractor-1.2-SNAPSHOT.jar` to your project `src/main/resources`:
+
+```bash
++---src
+    +---main
+            +---java
+            |   +---com
+            |       +---mycompany
+            |           +---app
+            +---resources
+
+```
+  * Add reference to the project `pom.xml` (a sample project is checked in)
+```xml
+<properties>
+  <jprotractor.version>1.2-SNAPSHOT</jprotractor.version>
+</properties>
+```
+```xml
+<dependencies>
+<dependency>
+     <groupId>com.jprotractor</groupId>
+     <artifactId>jprotractor</artifactId>
+     <version>${jprotractor.version}</version>
+     <scope>system</scope>
+     <systemPath>${project.basedir}/src/main/resources/jprotractor-${jprotractor.version}.jar</systemPath>
+</dependency>
+</dependencies>
+```
+  * Add reference to the code:
+```java
+import com.jprotractor.NgBy;
+import com.jprotractor.NgWebDriver;
+import com.jprotractor.NgWebElement;
+```
+
+#### Ant
+
+* Copy the `target\jprotractor-1.2-SNAPSHOT.jar`  in the same location oher dependency jars, e.g. `c:\java\selenium`,
+* Use the bolierplate `build.xml` (a sample project is checked in) or merge with your existing build file(s):
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="example" basedir=".">
+  <property name="build.dir" value="${basedir}/build"/>
+  <property name="selenium.jars" value="c:/java/selenium"/>
+  <property name="src.dir" value="${basedir}/src"/>
+  <target name="loadTestNG" depends="setClassPath">
+    <taskdef resource="testngtasks" classpath="${test.classpath}"/>
+  </target>
+  <target name="setClassPath">
+    <path id="classpath_jars">
+      <pathelement path="${basedir}/"/>
+      <fileset dir="${selenium.jars}" includes="*.jar"/>
+    </path>
+    <pathconvert pathsep=";" property="test.classpath" refid="classpath_jars"/>
+  </target>
+  <target name="clean">
+    <delete dir="${build.dir}"/>
+  </target>
+  <target name="compile" depends="clean,setClassPath,loadTestNG">
+    <mkdir dir="${build.dir}"/>
+    <javac destdir="${build.dir}" srcdir="${src.dir}">
+      <classpath refid="classpath_jars"/>
+    </javac>
+  </target>
+  <target name="test" depends="compile">
+    <testng classpath="${test.classpath};${build.dir}">
+      <xmlfileset dir="${basedir}" includes="testng.xml"/>
+    </testng>
+  </target>
+</project>
+```
+* Add reference to the code:
+```java
+import com.jprotractor.NgBy;
+import com.jprotractor.NgWebDriver;
+import com.jprotractor.NgWebElement;
+```
+
+### Related Projects
   - [Protractor-jvm](https://github.com/F1tZ81/Protractor-jvm)
   - [ngWebDriver](https://github.com/paul-hammant/ngWebDriver)
-  - [angular/protractor](https://github.com/angular/protractor) 
+  - [angular/protractor](https://github.com/angular/protractor)
   - [bbaia/protractor-net](https://github.com/bbaia/protractor-net)
   - [sergueik/protractor-net](https://github.com/sergueik/powershell_selenium/tree/master/csharp/protractor-net)
 
-
-Authors
--------
-[Serguei Kouzmine](kouzmine_serguei@yahoo.com)
-
+### Authors
 [Carlos Alexandro Becker](caarlos0@gmail.com)
+[Serguei Kouzmine](kouzmine_serguei@yahoo.com)
