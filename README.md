@@ -248,6 +248,9 @@ The jar will be in the `target` folder:
 ```
 You can install it into your local `.m2` repository as  explained below
 
+### Keyword-Driven Frameworks
+
+For example of [Keyword-Driven Framework](http://toolsqa.com/selenium-webdriver/keyword-driven-framework/introduction/), incorporating the Selenium Protractor methods see [sergueik\keyword_driven_framework](https://github.com/sergueik/keyword_driven_framework). It contains both __jProtractor__ and similar Java based Protractor Client Library wrapper ptoject, [paul-hammant/ngWebDriver](https://github.com/paul-hammant/ngWebDriver).
 
 ### Using with existing Java projects
 
