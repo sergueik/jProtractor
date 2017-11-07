@@ -1,72 +1,40 @@
 package com.jprotractor.integration;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
-
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assume.*;
+import static org.junit.Assume.assumeFalse;
 
 import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Formatter;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import java.util.concurrent.TimeUnit;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.experimental.categories.Category;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
 import org.junit.Test;
-import org.junit.Ignore;
-
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.firefox.internal.ProfilesIni;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoAlertPresentException;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.jprotractor.NgBy;
 import com.jprotractor.NgWebDriver;
 import com.jprotractor.NgWebElement;
 
 /**
- * Testing http://dalelotts.github.io/angular-bootstrap-datetimepicker/
- * 
+ * Datetime Picker tests
  * @author Serguei Kouzmine (kouzmine_serguei@yahoo.com)
  */
 
@@ -211,7 +179,7 @@ public class NgDatePickerTest {
 					WebElement element = null;
 					while (elements.hasNext() && !result) {
 						element = elements.next();
-						String text = element.getText();
+						String text = elements.next().getText();
 						// System.err.println("got: " + text);
 						result = text.contains(searchText);
 					}
@@ -251,7 +219,7 @@ public class NgDatePickerTest {
 		assertTrue(matcher.find());
 		// Act
 		String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
-				"Sep", "Oct", "Dec", "Jan" };
+				"Sep", "Oct", "Nov", "Dec", "Jan" };
 		String display_month = matcher.group("month");
 		String next_month = months[java.util.Arrays.asList(months)
 				.indexOf(display_month) + 1];
@@ -274,7 +242,7 @@ public class NgDatePickerTest {
 
 	// @Ignore
 	@Test
-	// uses DateTime Picker dropdown with input box
+	// uses DateTime Picker drop down with input box
 	public void testDirectSelect() {
 
 		NgWebElement ng_datepicker;
@@ -289,8 +257,7 @@ public class NgDatePickerTest {
 					Boolean result = false;
 					WebElement element = null;
 					while (elements.hasNext() && !result) {
-						element = elements.next();
-						String text = element.getText();
+						String text = elements.next().getText();
 						// System.err.println("got: " + text);
 						result = text.contains(searchText);
 					}
@@ -350,12 +317,23 @@ public class NgDatePickerTest {
 		assertThat(ng_dataDates.size(), equalTo(24));
 		// Thread.sleep(10000);
 
-		String timeOfDay = "6:00 PM";
+		Pattern patternTimeOfDay = Pattern.compile("(?:[1-9]|1[0-2]):00 pM",
+				Pattern.CASE_INSENSITIVE);
 		WebElement ng_hour = ng_datepicker
+				.findElements(NgBy.cssContainingText("span.hour", patternTimeOfDay))
+				.get(0);
+		assertThat(ng_hour, notNullValue());
+		highlight(ng_hour);
+		System.err
+				.println("Hour of the day (pattern search): " + ng_hour.getText());
+		String timeOfDay = "6:00 PM";
+		ng_hour = ng_datepicker
 				.findElements(NgBy.cssContainingText("span.hour", timeOfDay)).get(0);
 		assertThat(ng_hour, notNullValue());
 		highlight(ng_hour);
-		System.err.println("Hour of the day: " + ng_hour.getText());
+		System.err
+				.println("Hour of the day (exact text search): " + ng_hour.getText());
+
 		ng_hour.click();
 		ngDriver.waitForAngular();
 		String specificMinute = "6:35 PM";

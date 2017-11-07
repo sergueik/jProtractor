@@ -18,6 +18,8 @@ import com.jprotractor.scripts.FindRepeaterRows;
 import com.jprotractor.scripts.FindSelectedOption;
 import com.jprotractor.scripts.FindSelectedRepeaterOption;
 
+import java.util.regex.Pattern;
+
 import org.openqa.selenium.By;
 
 public final class NgBy {
@@ -39,6 +41,22 @@ public final class NgBy {
 	public static By cssContainingText(final String cssSelector, String text) {
 		return new JavaScriptBy(new FindCssSelectorContainingText(), cssSelector,
 				text);
+	}
+
+	public static By cssContainingText(final String cssSelector,
+			Pattern pattern) {
+		int patternFlags = pattern.flags();
+		String patternText = String
+				.format("__REGEXP__/%s/%s%s",
+						pattern.pattern(),
+						((patternFlags
+								& Pattern.CASE_INSENSITIVE) == Pattern.CASE_INSENSITIVE) ? "i"
+										: "",
+						((patternFlags & Pattern.MULTILINE) == Pattern.MULTILINE) ? "m"
+								: "");
+
+		return new JavaScriptBy(new FindCssSelectorContainingText(), cssSelector,
+				patternText);
 	}
 
 	public static By input(final String input) {

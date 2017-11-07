@@ -237,7 +237,7 @@ public class NgLocalFileTest {
 		Matcher matcher = pattern.matcher(ng_display.getText());
 		ArrayList<String> months = new ArrayList<>(
 				Arrays.asList(new String[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-						"Jul", "Aug", "Sep", "Oct", "Dec", "Jan" }));
+						"Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan" }));
 		String followingMonth = null;
 		if (matcher.find()) {
 			followingMonth = months
