@@ -150,7 +150,12 @@ for CI build replace the Setup () with
 	  ngDriver = new NgWebDriver(seleniumDriver);
   }
 ```
+### Tests
 
+The project contains over 50 tests execrising various scenarios with popular web sites like and also with static AngularJS sample pages checked in to `src/test/resources`. To prevent running all these tests during package generation, these tests are currenly converted to integration tests. To run these tests use the comand:
+```cmd
+mvn integration-test
+```
 
 ### Note
 PhantomJs allows loading Angular samples from `file://` content, you need to allow some additional options if the test page loads external content:
