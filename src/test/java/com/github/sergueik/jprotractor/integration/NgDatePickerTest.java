@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
@@ -228,16 +229,16 @@ public class NgDatePickerTest {
 		WebElement ng_next_month = ng_display.findElement(By.xpath(".."))
 				.findElement(By.className("right"));
 		assertThat(ng_next_month, notNullValue());
-		highlight(ng_next_month);
+		highlight(ng_next_month, 1000);
+		ng_next_month.click();
 		try {
 			Thread.sleep(100);
 		} catch (InterruptedException e) {
 		}
-		ng_next_month.click();
-		assertTrue(ng_display.getText().contains(next_month));
-		highlight(ng_display);
 		// Assert
 		System.err.println("Next month: " + ng_display.getText());
+		assertTrue(ng_display.getText().contains(next_month));
+		highlight(ng_display);
 	}
 
 	// @Ignore
@@ -395,6 +396,11 @@ public class NgDatePickerTest {
 	}
 
 	private static void highlight(WebElement element) {
+		CommonFunctions.highlight(element);
+	}
+
+	private static void highlight(WebElement element, int delay) {
+		CommonFunctions.setHighlightTimeout(delay);
 		CommonFunctions.highlight(element);
 	}
 }
