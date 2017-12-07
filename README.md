@@ -1,6 +1,6 @@
 ### Info
 
-Being  aThe [__Angular Protractor__](https://github.com/angular/protractor) is a very popular Selenium Web Driver based project.
+The [__Angular Protractor__](https://github.com/angular/protractor) is a very popular Selenium Web Driver based project.
 However being a Javascript testing tool, __Protractor__ enforces one to (re)write the whole test suite in Javascript which some may find not acceptable solution.
 
 This project and the sibling [C# Protractor Client Framework](https://github.com/sergueik/powershell_selenium/tree/master/csharp/protractor-net) tries to make such conversion unnecessary.
