@@ -1,73 +1,35 @@
 package com.github.sergueik.jprotractor.integration;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
-
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Formatter;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import java.util.concurrent.TimeUnit;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.experimental.categories.Category;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
 import org.junit.Test;
-
 import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.firefox.internal.ProfilesIni;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoAlertPresentException;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.github.sergueik.jprotractor.NgBy;
 import com.github.sergueik.jprotractor.NgWebDriver;
 import com.github.sergueik.jprotractor.NgWebElement;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
-
 /**
  * Integration tests of Calculator http://juliemr.github.io/protractor-demo/
- * 
  * @author Serguei Kouzmine (kouzmine_serguei@yahoo.com)
  */
 
 public class NgCalculatorIntegrationTest {
-	private static String fullStackTrace;
+
 	private static NgWebDriver ngDriver;
 	private static WebDriver seleniumDriver;
 	static WebDriverWait wait;
@@ -102,7 +64,7 @@ public class NgCalculatorIntegrationTest {
 	}
 
 	@Test
-	public void testAddition() throws Exception {
+	public void testAddition() {
 		NgWebElement element = ngDriver.findElement(NgBy.model("first"));
 		assertThat(element, notNullValue());
 		highlight(element);
@@ -131,8 +93,7 @@ public class NgCalculatorIntegrationTest {
 		seleniumDriver.quit();
 	}
 
-	private static void highlight(WebElement element)
-			throws InterruptedException {
+	private static void highlight(WebElement element) {
 		CommonFunctions.highlight(element);
 	}
 

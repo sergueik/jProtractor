@@ -16,8 +16,8 @@ import java.util.regex.Pattern;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -89,6 +89,7 @@ public class NgDatePickerTest {
 			(new WebDriverWait(driver, 5)).until(new ExpectedCondition<Boolean>() {
 				@Override
 				public Boolean apply(WebDriver d) {
+					// cannot use Java streams here ?
 					Iterator<WebElement> elements = d
 							.findElements(By.className("col-sm-6")).iterator();
 					Boolean result = false;
@@ -229,16 +230,16 @@ public class NgDatePickerTest {
 		WebElement ng_next_month = ng_display.findElement(By.xpath(".."))
 				.findElement(By.className("right"));
 		assertThat(ng_next_month, notNullValue());
-		highlight(ng_next_month, 1000);
-		ng_next_month.click();
+		highlight(ng_next_month);
 		try {
 			Thread.sleep(100);
 		} catch (InterruptedException e) {
 		}
-		// Assert
-		System.err.println("Next month: " + ng_display.getText());
+		ng_next_month.click();
 		assertTrue(ng_display.getText().contains(next_month));
 		highlight(ng_display);
+		// Assert
+		System.err.println("Next month: " + ng_display.getText());
 	}
 
 	// @Ignore
@@ -396,11 +397,6 @@ public class NgDatePickerTest {
 	}
 
 	private static void highlight(WebElement element) {
-		CommonFunctions.highlight(element);
-	}
-
-	private static void highlight(WebElement element, int delay) {
-		CommonFunctions.setHighlightTimeout(delay);
 		CommonFunctions.highlight(element);
 	}
 }

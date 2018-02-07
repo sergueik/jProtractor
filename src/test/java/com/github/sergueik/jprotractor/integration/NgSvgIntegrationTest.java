@@ -1,67 +1,29 @@
 package com.github.sergueik.jprotractor.integration;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-import static org.hamcrest.CoreMatchers.*;
-import org.hamcrest.MatcherAssert;
-// import static com.jcabi.matchers.RegexMatchers;
-import static com.jcabi.matchers.RegexMatchers.*;
-import static org.junit.Assert.*;
-
 import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Formatter;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.experimental.categories.Category;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
 import org.junit.Test;
-
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.firefox.internal.ProfilesIni;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.github.sergueik.jprotractor.NgBy;
 import com.github.sergueik.jprotractor.NgWebDriver;
 import com.github.sergueik.jprotractor.NgWebElement;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
-
 /**
- * Local file Integration tests
+ * SVG tests
  * 
  * @author Serguei Kouzmine (kouzmine_serguei@yahoo.com)
  */
@@ -102,15 +64,13 @@ public class NgSvgIntegrationTest {
 	}
 
 	@Test
-	public void testCircles() throws Exception {
+	public void testCircles() {
 		// if (isCIBuild) { // Alert not handled by PhantomJS
 		// return;
 		// }
 		getPageContent("ng_svg_ex1.htm");
-		Enumeration<WebElement> circles = Collections
-				.enumeration(ngDriver.findElements(NgBy.repeater("circle in circles")));
-		while (circles.hasMoreElements()) {
-			WebElement circle = circles.nextElement();
+		for (WebElement circle : ngDriver
+				.findElements(NgBy.repeater("circle in circles"))) {
 			// if (circle.getText().isEmpty()){
 			// break;
 			// }
@@ -153,7 +113,10 @@ public class NgSvgIntegrationTest {
 						"Cannot locate by cssSelector: " + css_selector_of(circle));
 			}
 		}
-		Thread.sleep(1000);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		}
 	}
 
 	@AfterClass
@@ -162,23 +125,25 @@ public class NgSvgIntegrationTest {
 		seleniumDriver.quit();
 	}
 
-	private static void getPageContent(String pagename)
-			throws InterruptedException {
+	private static void getPageContent(String pagename) {
 		String baseUrl = CommonFunctions.getPageContent(pagename);
 		ngDriver.navigate().to(baseUrl);
-		Thread.sleep(500);
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+		}
 	}
 
-	private static void highlight(WebElement element)
-			throws InterruptedException {
+	private static void highlight(WebElement element) {
 		CommonFunctions.highlight(element);
 	}
 
 	private static String getIdentity(WebElement element)
 			throws InterruptedException {
-		String script = "return angular.identity(angular.element(arguments[0])).html();";
-		// returns too little HTML information in Java
-		return CommonFunctions.executeScript(script, element).toString();
+		// returns too little HTML information
+		return executeScript(
+				"return angular.identity(angular.element(arguments[0])).html();",
+				element).toString();
 	}
 
 	private static String xpath_of(WebElement element) {
@@ -203,7 +168,7 @@ public class NgSvgIntegrationTest {
 				+ "         if (sibling_element.nodeType === 1 && sibling_element.tagName.toLowerCase() === elementTagName) {\n"
 				+ "             sibling_count++;\n" + "         }\n" + "     }\n"
 				+ "     return;\n" + " };\n" + " return get_xpath_of(arguments[0]);\n";
-		return (String) execute_script(script, element);
+		return (String) executeScript(script, element);
 	}
 
 	private static String css_selector_of(WebElement element) {
@@ -224,19 +189,17 @@ public class NgSvgIntegrationTest {
 				+ "path.unshift(selector);\n" + "element = element.parentNode;\n"
 				+ "}\n" + "return path.join(' > ');\n" + "} \n"
 				+ "return get_css_selector_of(arguments[0]);\n";
-		return (String) execute_script(script, element);
+		return (String) executeScript(script, element);
 
 	}
 
 	// http://www.programcreek.com/java-api-examples/index.php?api=org.openqa.selenium.JavascriptExecutor
-	public static Object execute_script(String script, Object... args) {
+	public static Object executeScript(String script, Object... args) {
 		if (seleniumDriver instanceof JavascriptExecutor) {
 			JavascriptExecutor javascriptExecutor = (JavascriptExecutor) seleniumDriver;
 			return javascriptExecutor.executeScript(script, args);
 		} else {
-			throw new RuntimeException(
-					"Script execution is only available for WebDrivers that implement "
-							+ "the JavascriptExecutor interface.");
+			throw new RuntimeException("Script execution failed.");
 		}
 	}
 

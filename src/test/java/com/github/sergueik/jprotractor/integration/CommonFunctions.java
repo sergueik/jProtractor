@@ -1,45 +1,31 @@
 package com.github.sergueik.jprotractor.integration;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-
-import java.net.BindException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.IOException;
-import java.util.Map;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import com.github.sergueik.jprotractor.NgBy;
-import com.github.sergueik.jprotractor.NgWebDriver;
-import com.github.sergueik.jprotractor.NgWebElement;
-
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * Common functions for integration testing
@@ -70,7 +56,7 @@ public class CommonFunctions {
 			// port 4444
 			// For Vagrant box browser testing have localhost port 4444 forwarded to
 			// the hub 4444
-			// Alternatively make the test class launch the browser
+      // Alternatively make the test class launch the browser
 
 			if (browser.equals("chrome")) {
 				System.setProperty("webdriver.chrome.driver",
@@ -78,7 +64,7 @@ public class CommonFunctions {
 				DesiredCapabilities capabilities = DesiredCapabilities.chrome();
 				ChromeOptions options = new ChromeOptions();
 
-				HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
+				Map<String, Object> chromePrefs = new HashMap<>();
 				chromePrefs.put("profile.default_content_settings.popups", 0);
 				String downloadFilepath = System.getProperty("user.dir")
 						+ System.getProperty("file.separator") + "target"

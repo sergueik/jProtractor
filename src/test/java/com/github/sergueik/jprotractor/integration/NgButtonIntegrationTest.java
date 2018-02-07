@@ -1,67 +1,35 @@
 package com.github.sergueik.jprotractor.integration;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-import static org.hamcrest.CoreMatchers.*;
-import org.hamcrest.MatcherAssert;
 // import static com.jcabi.matchers.RegexMatchers;
-import static com.jcabi.matchers.RegexMatchers.*;
-import static org.junit.Assert.*;
+import static com.jcabi.matchers.RegexMatchers.matchesPattern;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Formatter;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.experimental.categories.Category;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
 import org.junit.Test;
-
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.firefox.internal.ProfilesIni;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoAlertPresentException;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.github.sergueik.jprotractor.NgBy;
 import com.github.sergueik.jprotractor.NgWebDriver;
 import com.github.sergueik.jprotractor.NgWebElement;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
-
 /**
  * Local file Integration tests
+ * 
  * @author Serguei Kouzmine (kouzmine_serguei@yahoo.com)
  */
 
@@ -96,7 +64,7 @@ public class NgButtonIntegrationTest {
 	}
 
 	@Test
-	public void testButtonNgIf() throws Exception {
+	public void testButtonNgIf() {
 		// if (isCIBuild) { // Alert not handled by PhantomJS
 		// return;
 		// }
@@ -105,7 +73,7 @@ public class NgButtonIntegrationTest {
 		WebElement button = seleniumDriver
 				.findElement(By.cssSelector("button.btn"));
 		ngDriver.waitForAngular();
-		highlight(button);
+		CommonFunctions.highlight(button);
 		NgWebElement ng_button = new NgWebElement(ngDriver, button);
 		assertThat(ng_button, notNullValue());
 		assertThat(ng_button.getAttribute("ng-click"),
@@ -132,7 +100,7 @@ public class NgButtonIntegrationTest {
 			return;
 		}
 		button = seleniumDriver.findElement(By.cssSelector("button.btn"));
-		highlight(button);
+		CommonFunctions.highlight(button);
 		ng_button = new NgWebElement(ngDriver, button);
 		assertThat(ng_button, notNullValue());
 		assertThat(ng_button.getAttribute("ng-click"),
@@ -150,7 +118,7 @@ public class NgButtonIntegrationTest {
 	}
 
 	@Test
-	public void testButtonStateText() throws Exception {
+	public void testButtonStateText() {
 		// if (isCIBuild) { // Alert not handled by PhantomJS
 		// return;
 		// }
@@ -158,10 +126,10 @@ public class NgButtonIntegrationTest {
 		WebElement button = seleniumDriver
 				.findElement(By.cssSelector("button.btn"));
 		ngDriver.waitForAngular();
-		highlight(button);
+		CommonFunctions.highlight(button);
 		NgWebElement ng_status = ngDriver
 				.findElement(NgBy.binding("house.frontDoor.isOpen"));
-		highlight(ng_status);
+		CommonFunctions.highlight(ng_status);
 		assertTrue(ng_status.getText().matches("The door is closed"));
 		System.err.println("Initially: " + ng_status.getText());
 		button.click();
@@ -176,7 +144,7 @@ public class NgButtonIntegrationTest {
 			return;
 		}
 		ng_status = ngDriver.findElement(NgBy.binding("house.frontDoor.isOpen"));
-		highlight(ng_status);
+		CommonFunctions.highlight(ng_status);
 		System.err.println("Finally: " + ng_status.getText());
 		assertThat(ng_status.getText(), matchesPattern(".+open"));
 	}
@@ -187,15 +155,12 @@ public class NgButtonIntegrationTest {
 		seleniumDriver.quit();
 	}
 
-	private static void getPageContent(String pagename)
-			throws InterruptedException {
+	private static void getPageContent(String pagename) {
 		String baseUrl = CommonFunctions.getPageContent(pagename);
 		ngDriver.navigate().to(baseUrl);
-		Thread.sleep(500);
-	}
-
-	private static void highlight(WebElement element)
-			throws InterruptedException {
-		CommonFunctions.highlight(element);
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+		}
 	}
 }

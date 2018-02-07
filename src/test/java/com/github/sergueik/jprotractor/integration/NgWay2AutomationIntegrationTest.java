@@ -1,66 +1,37 @@
 package com.github.sergueik.jprotractor.integration;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.collections4.CollectionUtils;
-
+import static java.lang.Boolean.parseBoolean;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 
-import java.net.BindException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.io.IOException;
-
-import static java.lang.Boolean.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Formatter;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.After;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.experimental.categories.Category;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
-import org.junit.Test;
 import org.junit.Ignore;
-import org.openqa.selenium.Alert;
+import org.junit.Test;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.firefox.internal.ProfilesIni;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoAlertPresentException;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -69,12 +40,8 @@ import com.github.sergueik.jprotractor.NgBy;
 import com.github.sergueik.jprotractor.NgWebDriver;
 import com.github.sergueik.jprotractor.NgWebElement;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
-
 public class NgWay2AutomationIntegrationTest {
-	private static String fullStackTrace;
+
 	private static NgWebDriver ngDriver;
 	private static WebDriver seleniumDriver;
 	static WebDriverWait wait;
@@ -90,7 +57,7 @@ public class NgWay2AutomationIntegrationTest {
 	public static String baseUrl = "http://www.way2automation.com/angularjs-protractor/banking";
 
 	@BeforeClass
-	public static void setup() throws IOException, InterruptedException {
+	public static void setup() throws IOException {
 		isCIBuild = CommonFunctions.checkEnvironment();
 		seleniumDriver = CommonFunctions.getSeleniumDriver();
 		seleniumDriver.manage().window().setSize(new Dimension(width, height));
@@ -105,9 +72,59 @@ public class NgWay2AutomationIntegrationTest {
 	}
 
 	@Before
-	public void beforeEach() throws InterruptedException {
+	public void beforeEach() {
 		// Given I am on Home page
 		ngDriver.navigate().to(baseUrl);
+	}
+
+	@Ignore
+	@Test
+	public void testSiteLogint() {
+		String login_url = "http://way2automation.com/way2auto_jquery/index.php";
+		String username = System.getenv("TEST_USERNAME");
+		String password = System.getenv("TEST_PASSWORD");
+		WebDriver driver = ngDriver.getWrappedDriver();
+		driver.navigate().to(login_url);
+		// signup
+
+		wait.until(
+				ExpectedConditions.visibilityOfElementLocated(By.id("load_box")));
+		WebElement load_form = driver
+				.findElement(By.cssSelector("div#load_box.popupbox form#load_form"));
+		highlight(load_form);
+
+		WebElement signup_link = load_form
+				.findElement(By.cssSelector("a.fancybox[href='#login']"));
+		actions.moveToElement(signup_link).build().perform();
+		highlight(signup_link);
+		signup_link.click();
+		// enter username
+		WebElement login_username = driver.findElement(By.cssSelector(
+				"div#login.popupbox form#load_form input[name='username']"));
+		highlight(login_username);
+		login_username.sendKeys(username);
+		// enter password
+		WebElement login_password = driver.findElement(By.cssSelector(
+				"div#login.popupbox form#load_form input[type='password'][name='password']"));
+		highlight(login_password);
+		login_password.sendKeys(password);
+		// to try the method, can always invoke it before submiting the credentias
+		// click "Login"
+		actions
+				.moveToElement(driver.findElement(By
+						.cssSelector("div#login.popupbox form#load_form [value='Submit']")))
+				.click().build().perform();
+		// wait until the login popup box disappears with .Net delegate
+		// .net / jave 8:
+		// wait.Until(d =>
+		// (d.FindElements(By.CssSelector("div#login.popupbox")).Count == 0));
+		if (driver.findElement(By.cssSelector("div#login.popupbox"))
+				.isDisplayed()) {
+			System.err.println("Waiting while Login Popup Box is visible");
+			CommonFunctions.waitWhileElementIsVisible(By.cssSelector(
+					"div#login.popupbox input[type='hidden'][name='action']"));
+		}
+		System.err.println("Login Popup Box is not diplayed");
 	}
 
 	/*
@@ -132,7 +149,7 @@ public class NgWay2AutomationIntegrationTest {
 	 */
 	// @Ignore
 	@Test
-	public void testCustomerLogin() throws Exception {
+	public void testCustomerLogin() {
 		if (isCIBuild) {
 			return;
 		}
@@ -147,11 +164,8 @@ public class NgWay2AutomationIntegrationTest {
 		assertThat(element.getAttribute("id"), equalTo("userSelect"));
 		highlight(element);
 
-		Enumeration<WebElement> customers = Collections
-				.enumeration(element.findElements(NgBy.repeater("cust in Customers")));
-
-		while (customers.hasMoreElements()) {
-			WebElement currentCustomer = customers.nextElement();
+		for (WebElement currentCustomer : element
+				.findElements(NgBy.repeater("cust in Customers"))) {
 			if (currentCustomer.getText().indexOf("Harry Potter") >= 0) {
 				System.err.println(currentCustomer.getText());
 				actions.moveToElement(currentCustomer).build().perform();
@@ -187,6 +201,13 @@ public class NgWay2AutomationIntegrationTest {
 		matcher = pattern.matcher(ng_accountNo.getText());
 		assertFalse(matcher.find());
 
+		// alternative to java.util.regex
+		List<String> oneAcountArray = new ArrayList<>();
+		oneAcountArray.add(ng_accountNo.getText());
+		assertTrue(CollectionUtils.containsAny(oneAcountArray,
+				new ArrayList<>(Arrays.asList(customerAccounts))));
+		oneAcountArray.clear();
+
 		WebElement balance = ngDriver.findElement(NgBy.binding("amount"));
 		assertTrue(balance.getText().matches("^\\d+$"));
 		highlight(balance);
@@ -195,13 +216,12 @@ public class NgWay2AutomationIntegrationTest {
 		assertTrue(currency.getText().matches("^(?:Dollar|Pound|Rupee)$"));
 		highlight(currency);
 
-		// And I can switch to any of my accounts
-		ArrayList<String> avaliableAccounts = new ArrayList<>();
-		Enumeration<WebElement> accounts = Collections.enumeration(
-				ngDriver.findElements(NgBy.options("account for account in Accounts")));
+		// And I can switch to every account owned
+		List<String> avaliableAccounts = new ArrayList<>();
 
-		while (accounts.hasMoreElements()) {
-			String otherAccountId = accounts.nextElement().getText();
+		for (WebElement account : ngDriver
+				.findElements(NgBy.options("account for account in Accounts"))) {
+			String otherAccountId = account.getText();
 			assertTrue(otherAccountId.matches("^\\d+$"));
 			// And I can not see any other accounts
 			pattern = Pattern
@@ -210,23 +230,22 @@ public class NgWay2AutomationIntegrationTest {
 			assertFalse(matcher.find());
 			avaliableAccounts.add(otherAccountId);
 		}
+
+		// And I can find every my account
 		assertTrue(avaliableAccounts
 				.containsAll(new HashSet<String>(Arrays.asList(customerAccounts))));
 
-		accounts = Collections.enumeration(
-				ngDriver.findElements(NgBy.options("account for account in Accounts")));
-
-		while (accounts.hasMoreElements()) {
-			WebElement currentAccount = accounts.nextElement();
-			System.err.println(currentAccount.getText());
-			currentAccount.click();
-		}
+		ngDriver.findElements(NgBy.options("account for account in Accounts"))
+				.stream().forEach(currentAccount -> {
+					System.err.println(currentAccount.getText());
+					currentAccount.click();
+				});
 
 	}
 
 	// @Ignore
 	@Test
-	public void testEvaluateTransactionDetails() throws Exception {
+	public void testEvaluateTransactionDetails() throws InterruptedException {
 		if (isCIBuild) {
 			return;
 		}
@@ -236,13 +255,9 @@ public class NgWay2AutomationIntegrationTest {
 		assertThat(ngDriver.findElement(NgBy.input("custId")).getAttribute("id"),
 				equalTo("userSelect"));
 
-		Enumeration<WebElement> customers = Collections
-				.enumeration(ngDriver.findElement(NgBy.model("custId"))
-						.findElements(NgBy.repeater("cust in Customers")));
-
-		// NOTE: select customer/account with transactions
-		while (customers.hasMoreElements()) {
-			WebElement currentCustomer = customers.nextElement();
+		// Select customer/account with transactions
+		for (WebElement currentCustomer : ngDriver.findElement(NgBy.model("custId"))
+				.findElements(NgBy.repeater("cust in Customers"))) {
 			if (currentCustomer.getText().indexOf("Hermoine Granger") >= 0) {
 				System.err.println(currentCustomer.getText());
 				currentCustomer.click();
@@ -251,17 +266,17 @@ public class NgWay2AutomationIntegrationTest {
 		NgWebElement login = ngDriver.findElement(NgBy.buttonText("Login"));
 		assertTrue(login.isEnabled());
 		login.click();
-		Enumeration<WebElement> accounts = Collections.enumeration(
-				ngDriver.findElements(NgBy.options("account for account in Accounts")));
 
-		// NOTE: select account with transactions
-		while (accounts.hasMoreElements()) {
-			WebElement currentAccount = accounts.nextElement();
+		// NOTE: need to select account with transactions
+		for (WebElement currentAccount : ngDriver
+				.findElements(NgBy.options("account for account in Accounts"))) {
+
 			if (Integer.parseInt(currentAccount.getText()) == 1001) {
 				System.err.println(currentAccount.getText());
 				currentAccount.click();
 			}
 		}
+
 		// inspect transactions
 		NgWebElement transactions_button = ngDriver
 				.findElement(NgBy.partialButtonText("Transactions"));
@@ -271,11 +286,16 @@ public class NgWay2AutomationIntegrationTest {
 		Thread.sleep(500);
 		wait.until(ExpectedConditions.visibilityOf(ngDriver
 				.findElement(NgBy.repeater("tx in transactions")).getWrappedElement()));
-		Iterator<WebElement> transactions = ngDriver
-				.findElements(NgBy.repeater("tx in transactions")).iterator();
+
+		// inspect max 5 transactions
 		int cnt = 0;
-		while (transactions.hasNext() && cnt++ < 5) {
-			WebElement currentTransaction = transactions.next();
+
+		for (WebElement currentTransaction : ngDriver
+				.findElements(NgBy.repeater("tx in transactions"))) {
+			if (cnt++ >= 5) {
+				break;
+			}
+
 			NgWebElement ngCurrentTransaction = new NgWebElement(ngDriver,
 					currentTransaction);
 			assertTrue(ngCurrentTransaction.evaluate("tx.amount").toString()
@@ -288,7 +308,7 @@ public class NgWay2AutomationIntegrationTest {
 
 	// @Ignore
 	@Test
-	public void testOpenAccount() throws Exception {
+	public void testOpenAccount() throws InterruptedException {
 		if (isCIBuild) {
 			return;
 		}
@@ -372,22 +392,18 @@ public class NgWay2AutomationIntegrationTest {
 		// I can find the Customers Account I just Added
 		wait.until(ExpectedConditions.visibilityOf(ngDriver
 				.findElement(NgBy.repeater("cust in Customers")).getWrappedElement()));
-		Enumeration<WebElement> customersEnum = Collections
-				.enumeration(ngDriver.findElements(NgBy.repeater("cust in Customers")));
-		while (customersEnum.hasMoreElements()) {
-			// find the customer
-			WebElement currentCustomer = customersEnum.nextElement();
+
+		// find the customer by name
+		for (WebElement currentCustomer : ngDriver
+				.findElements(NgBy.repeater("cust in Customers"))) {
 			if (currentCustomer.getText().indexOf(customerName) >= 0) {
 				// System.err.println("Current customer: " + currentCustomer.getText());
 				highlight(currentCustomer);
 				NgWebElement ng_currentCustomer = new NgWebElement(ngDriver,
 						currentCustomer);
-				Enumeration<WebElement> accountsEnum = Collections
-						.enumeration(ng_currentCustomer
-								.findElements(NgBy.repeater("account in cust.accountNo")));
-				while (accountsEnum.hasMoreElements()) {
-					// find the account
-					WebElement currentAccount = accountsEnum.nextElement();
+				// find the account we just added
+				for (WebElement currentAccount : ng_currentCustomer
+						.findElements(NgBy.repeater("account in cust.accountNo"))) {
 					if (currentAccount.getText().indexOf(newAccount) >= 0) {
 						highlight(currentAccount);
 					}
@@ -398,7 +414,7 @@ public class NgWay2AutomationIntegrationTest {
 
 	// @Ignore
 	@Test
-	public void testSortCustomerAccounts() throws Exception {
+	public void testSortCustomerAccounts() throws InterruptedException {
 		if (isCIBuild) {
 			return;
 		}
@@ -431,7 +447,7 @@ public class NgWay2AutomationIntegrationTest {
 
 	// @Ignore
 	@Test
-	public void testListTransactions() throws Exception {
+	public void testListTransactions() {
 		if (isCIBuild) {
 			return;
 		}
@@ -441,12 +457,8 @@ public class NgWay2AutomationIntegrationTest {
 		assertThat(ngDriver.findElement(NgBy.input("custId")).getAttribute("id"),
 				equalTo("userSelect"));
 
-		Enumeration<WebElement> customers = Collections
-				.enumeration(ngDriver.findElement(NgBy.model("custId"))
-						.findElements(NgBy.repeater("cust in Customers")));
-
-		while (customers.hasMoreElements()) {
-			WebElement currentCustomer = customers.nextElement();
+		for (WebElement currentCustomer : ngDriver.findElement(NgBy.model("custId"))
+				.findElements(NgBy.repeater("cust in Customers"))) {
 			if (currentCustomer.getText().indexOf("Hermoine Granger") >= 0) {
 				System.err.println(currentCustomer.getText());
 				currentCustomer.click();
@@ -455,11 +467,9 @@ public class NgWay2AutomationIntegrationTest {
 		NgWebElement login = ngDriver.findElement(NgBy.buttonText("Login"));
 		assertTrue(login.isEnabled());
 		login.click();
-		Enumeration<WebElement> accounts = Collections.enumeration(
-				ngDriver.findElements(NgBy.options("account for account in Accounts")));
 
-		while (accounts.hasMoreElements()) {
-			WebElement currentAccount = accounts.nextElement();
+		for (WebElement currentAccount : ngDriver
+				.findElements(NgBy.options("account for account in Accounts"))) {
 			if (Integer.parseInt(currentAccount.getText()) == 1001) {
 				System.err.println(currentAccount.getText());
 				currentAccount.click();
@@ -472,14 +482,17 @@ public class NgWay2AutomationIntegrationTest {
 		highlight(transactions);
 		transactions.click();
 		// wait until transactions are loaded
-		Thread.sleep(500);
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+		}
+
 		wait.until(ExpectedConditions.visibilityOf(ngDriver
 				.findElement(NgBy.repeater("tx in transactions")).getWrappedElement()));
-		Iterator<WebElement> transactionTypeColumns = ngDriver
-				.findElements(NgBy.repeaterColumn("tx in transactions", "tx.type"))
-				.iterator();
-		while (transactionTypeColumns.hasNext()) {
-			WebElement transactionTypeColumn = transactionTypeColumns.next();
+
+		// perform some Credit transaction-specific checks
+		for (WebElement transactionTypeColumn : ngDriver
+				.findElements(NgBy.repeaterColumn("tx in transactions", "tx.type"))) {
 			if (transactionTypeColumn.getText().isEmpty()) {
 				break;
 			}
@@ -492,7 +505,7 @@ public class NgWay2AutomationIntegrationTest {
 	// @Ignore
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testAddCustomer() throws Exception {
+	public void testAddCustomer() {
 		if (isCIBuild) {
 			return;
 		}
@@ -541,14 +554,13 @@ public class NgWay2AutomationIntegrationTest {
 
 		// switch to "Customers" screen
 		ngDriver.findElement(NgBy.partialButtonText("Customers")).click();
-		// Wait the grid to get populated
 
+		// block and wait the customers list to get populated
 		wait.until(ExpectedConditions.visibilityOf(
 				ngDriver.findElement(NgBy.repeater("cust in Customers"))));
-		Enumeration<WebElement> fNamecells = Collections.enumeration(ngDriver
-				.findElements(NgBy.repeaterColumn("cust in Customers", "cust.fName")));
-		while (fNamecells.hasMoreElements()) {
-			WebElement firstNameElement = fNamecells.nextElement();
+
+		for (WebElement firstNameElement : ngDriver
+				.findElements(NgBy.repeaterColumn("cust in Customers", "cust.fName"))) {
 			actions.moveToElement(firstNameElement).build().perform();
 			highlight(firstNameElement);
 			System.err
@@ -559,22 +571,15 @@ public class NgWay2AutomationIntegrationTest {
 			assertThat(objLastName, notNullValue());
 			System.err.println("Customer's Last Name: " + objLastName.toString());
 			// fName, lName, accountNo, postCD, id, date
-			ArrayList<Long> accounts = (ArrayList<Long>) new NgWebElement(ngDriver,
+			List<Long> accounts = (List<Long>) new NgWebElement(ngDriver,
 					firstNameElement).evaluate("cust.accountNo");
-			if (accounts != null) {
-				for (Long account : accounts) {
-					System.err.println("Account No: " + account.toString());
-				}
-			} else {
-				System.err.println("No accounts");
-			}
+			System.err.println(accounts == null ? "No accounts"
+					: "Account No: " + Arrays.toString(accounts.toArray()));
 		}
 
-		Enumeration<WebElement> customers = Collections
-				.enumeration(ngDriver.findElements(NgBy.repeater("cust in Customers")));
 		NgWebElement ng_deleteCustomer = null;
-		while (customers.hasMoreElements()) {
-			WebElement currentCustomer = customers.nextElement();
+		for (WebElement currentCustomer : ngDriver
+				.findElements(NgBy.repeater("cust in Customers"))) {
 			if (currentCustomer.getText().indexOf("John Doe") >= 0) {
 				ng_deleteCustomer = new NgWebElement(ngDriver, currentCustomer);
 				break;
@@ -584,9 +589,8 @@ public class NgWay2AutomationIntegrationTest {
 		actions.moveToElement(ng_deleteCustomer.getWrappedElement()).build()
 				.perform();
 
+		// delete the customer we added
 		highlight(ng_deleteCustomer);
-
-		// delete the new customer
 		NgWebElement deleteCustomerButton = ng_deleteCustomer
 				.findElement(NgBy.buttonText("Delete"));
 		assertThat(deleteCustomerButton, notNullValue());
@@ -595,18 +599,24 @@ public class NgWay2AutomationIntegrationTest {
 		// .. in slow motion
 		actions.moveToElement(deleteCustomerButton.getWrappedElement())
 				.clickAndHold().build().perform();
-		Thread.sleep(100);
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+		}
 		actions.release().build().perform();
 		// let the customers reload
 		wait.until(ExpectedConditions.visibilityOf(
 				ngDriver.findElement(NgBy.repeater("cust in Customers"))));
-		Thread.sleep(100);
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+		}
 		// TODO: assert the customers.count change
 	}
 
 	// @Ignore
 	@Test
-	public void testInvitateNewCustomerToOpenAccount() throws Exception {
+	public void testInvitateNewCustomerToOpenAccount() {
 		if (isCIBuild) {
 			return;
 		}
@@ -661,11 +671,9 @@ public class NgWay2AutomationIntegrationTest {
 		ngDriver.findElement(NgBy.buttonText("Customer Login")).click();
 
 		// And I login as "John Doe"
-		Enumeration<WebElement> customers = Collections
-				.enumeration(ngDriver.findElement(NgBy.model("custId"))
-						.findElements(NgBy.repeater("cust in Customers")));
-		while (customers.hasMoreElements()) {
-			WebElement currentCustomer = customers.nextElement();
+
+		for (WebElement currentCustomer : ngDriver.findElement(NgBy.model("custId"))
+				.findElements(NgBy.repeater("cust in Customers"))) {
 			if (currentCustomer.getText().indexOf("John Doe") >= 0) {
 				System.err.println(currentCustomer.getText());
 				currentCustomer.click();
@@ -709,7 +717,7 @@ public class NgWay2AutomationIntegrationTest {
 
 	// @Ignore
 	@Test
-	public void testDepositAndWithdraw() throws Exception {
+	public void testDepositAndWithdraw() {
 		if (isCIBuild) {
 			return;
 		}
@@ -719,11 +727,10 @@ public class NgWay2AutomationIntegrationTest {
 		// select customer with accounts
 		assertThat(ngDriver.findElement(NgBy.input("custId")).getAttribute("id"),
 				equalTo("userSelect"));
-		Enumeration<WebElement> customers = Collections
-				.enumeration(ngDriver.findElement(NgBy.model("custId"))
-						.findElements(NgBy.repeater("cust in Customers")));
-		while (customers.hasMoreElements()) {
-			WebElement currentCustomer = customers.nextElement();
+
+		for (WebElement currentCustomer : ngDriver.findElement(NgBy.model("custId"))
+				.findElements(NgBy.repeater("cust in Customers"))) {
+
 			if (currentCustomer.getText().indexOf("Harry Potter") >= 0) {
 				System.err.println(currentCustomer.getText());
 				currentCustomer.click();
@@ -776,18 +783,21 @@ public class NgWay2AutomationIntegrationTest {
 		int finalBalance = Integer
 				.parseInt(ngDriver.findElement(NgBy.binding("amount")).getText());
 		assertTrue(finalBalance == 100 + initialBalance);
-		Thread.sleep(500);
+
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+		}
+
 		// switch to "Home" screen
 		ngDriver.findElement(NgBy.buttonText("Home")).click();
 		// customer login
 		ngDriver.findElement(NgBy.buttonText("Customer Login")).click();
 
 		// find the same customer / account
-		customers = Collections
-				.enumeration(ngDriver.findElement(NgBy.model("custId"))
-						.findElements(NgBy.repeater("cust in Customers")));
-		while (customers.hasMoreElements()) {
-			WebElement currentCustomer = customers.nextElement();
+
+		for (WebElement currentCustomer : ngDriver.findElement(NgBy.model("custId"))
+				.findElements(NgBy.repeater("cust in Customers"))) {
 			if (currentCustomer.getText().indexOf("Harry Potter") >= 0) {
 				System.err.println(currentCustomer.getText());
 				currentCustomer.click();
@@ -798,10 +808,9 @@ public class NgWay2AutomationIntegrationTest {
 		wait.until(ExpectedConditions.visibilityOf(
 				ngDriver.findElement(NgBy.options("account for account in Accounts"))
 						.getWrappedElement()));
-		Enumeration<WebElement> accounts2 = Collections.enumeration(
-				ngDriver.findElements(NgBy.options("account for account in Accounts")));
-		while (accounts2.hasMoreElements()) {
-			WebElement currentAccount = accounts2.nextElement();
+
+		for (WebElement currentAccount : ngDriver
+				.findElements(NgBy.options("account for account in Accounts"))) {
 			if (currentAccount.getText().indexOf(targetAccount) >= 0) {
 				System.err.println(currentAccount.getText());
 				currentAccount.click();
@@ -841,8 +850,7 @@ public class NgWay2AutomationIntegrationTest {
 		seleniumDriver.quit();
 	}
 
-	private static void highlight(WebElement element)
-			throws InterruptedException {
+	private static void highlight(WebElement element) {
 		CommonFunctions.highlight(element);
 	}
 

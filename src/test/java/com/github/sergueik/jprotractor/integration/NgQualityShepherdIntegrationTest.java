@@ -1,67 +1,32 @@
 package com.github.sergueik.jprotractor.integration;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
-
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assume.*;
+import static org.junit.Assume.assumeFalse;
 
 import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Formatter;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import java.util.concurrent.TimeUnit;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.experimental.categories.Category;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
-import org.junit.Test;
 import org.junit.Ignore;
-
+import org.junit.Test;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.firefox.internal.ProfilesIni;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoAlertPresentException;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.github.sergueik.jprotractor.NgBy;
 import com.github.sergueik.jprotractor.NgWebDriver;
 import com.github.sergueik.jprotractor.NgWebElement;
-
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
 
 /**
  * @author Serguei Kouzmine (kouzmine_serguei@yahoo.com) 
@@ -71,7 +36,6 @@ import org.openqa.selenium.WebElement;
 
 public class NgQualityShepherdIntegrationTest {
 
-	private static String fullStackTrace;
 	private static NgWebDriver ngDriver;
 	private static WebDriver seleniumDriver;
 	static WebDriverWait wait;
@@ -145,10 +109,8 @@ public class NgQualityShepherdIntegrationTest {
 		String deleteFriendName = friendName.getText();
 		assertFalse(deleteFriendName.isEmpty());
 		// When we delete every friend with the chosen name
-		Iterator<WebElement> friendRows = ngDriver
-				.findElements(NgBy.repeater("row in rows")).iterator();
-		while (friendRows.hasNext()) {
-			WebElement currentfriendRow = friendRows.next();
+		for (WebElement currentfriendRow : ngDriver
+				.findElements(NgBy.repeater("row in rows"))) {
 			WebElement currentfriendName = new NgWebElement(ngDriver,
 					currentfriendRow).findElement(NgBy.binding("row"));
 			if (currentfriendName.getText().indexOf(deleteFriendName) >= 0) {
@@ -179,15 +141,15 @@ public class NgQualityShepherdIntegrationTest {
 				NgBy.cssContainingText("td.ng-binding", deleteFriendName));
 		assertTrue(elements.size() == 0);
 		// examine remaining friends
-		friendRows = ngDriver.findElements(NgBy.repeater("row in rows")).iterator();
-		while (friendRows.hasNext()) {
-			WebElement currentFriendRow = friendRows.next();
+		for (WebElement currentFriendRow : ngDriver
+				.findElements(NgBy.repeater("row in rows"))) {
 			highlight(currentFriendRow);
 			String currentFriendName = new NgWebElement(ngDriver, currentFriendRow)
 					.evaluate("row").toString();
 			System.err.println("Found name: " + currentFriendName);
 			assertTrue(currentFriendName.indexOf(deleteFriendName) == -1);
 		}
+
 	}
 
 	@Ignore
