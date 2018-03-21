@@ -196,7 +196,7 @@ Certain tests ( e.g. involving `NgBy.selectedOption()` ) currently fail under [t
 
 |                      |              |
 |----------------------|--------------|
-| SELENIUM_VERSION     | __2.53.1__   |
+| SELENIUM_VERSION     | __3.x__ ,  __2.53.1__ |
 | FIREFOX_VERSION      | __45.0.1__   |
 | CHROME_VERSION       | __56.0.X__   |
 | CHROMEDRIVER_VERSION | __2.29__     |
@@ -258,7 +258,7 @@ You can install it into your local `.m2` repository as  explained below
 
 ### Keyword-Driven Frameworks
 
-For example of [Keyword-Driven Framework](http://toolsqa.com/selenium-webdriver/keyword-driven-framework/introduction/), incorporating the Selenium Protractor methods see [sergueik\keyword_driven_framework](https://github.com/sergueik/keyword_driven_framework). It contains both __jProtractor__ and similar Java based Protractor Client Library wrapper ptoject, [paul-hammant/ngWebDriver](https://github.com/paul-hammant/ngWebDriver).
+For example of [Keyword-Driven Framework](http://toolsqa.com/selenium-webdriver/keyword-driven-framework/introduction/), incorporating the Selenium Protractor methods see [sergueik\keyword_driven_framework](https://github.com/sergueik/keyword_driven_framework). It contains both __jProtractor__ and a similar Java-based Protractor Client Library wrapper ptoject, [paul-hammant/ngWebDriver](https://github.com/paul-hammant/ngWebDriver).
 
 ### Using with existing Java projects
 

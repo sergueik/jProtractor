@@ -39,7 +39,7 @@ import com.github.sergueik.jprotractor.NgWebElement;
  * @author Serguei Kouzmine (kouzmine_serguei@yahoo.com)
  */
 
-public class NgDatePickerTest {
+public class NgDatePickerIntegrationTest {
 
 	private static String fullStackTrace;
 	private static NgWebDriver ngDriver;
