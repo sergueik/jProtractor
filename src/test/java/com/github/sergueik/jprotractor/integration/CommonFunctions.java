@@ -56,7 +56,7 @@ public class CommonFunctions {
 			// port 4444
 			// For Vagrant box browser testing have localhost port 4444 forwarded to
 			// the hub 4444
-      // Alternatively make the test class launch the browser
+			// Alternatively make the test class launch the browser
 
 			if (browser.equals("chrome")) {
 				System.setProperty("webdriver.chrome.driver",
@@ -99,9 +99,16 @@ public class CommonFunctions {
 				capabilities.setCapability("locationContextEnabled", false);
 				capabilities.setCapability("acceptSslCerts", true);
 				capabilities.setCapability("elementScrollBehavior", 1);
+
 				FirefoxProfile profile = new FirefoxProfile();
 				profile.setAcceptUntrustedCertificates(true);
 				profile.setAssumeUntrustedCertificateIssuer(true);
+				// https://automated-testing.info/t/perehvat-logov-selenium-i-geckodriver-v-log4j2/21505
+				profile.setPreference("webdriver.firefox.logfile", "/dev/nul");
+				// The setting appears to have no effect.
+				// NOTE: does one need os-specific definition of /dev/null (like nul in
+				// Windows case) ?
+
 				// no longer supported as of Selenium 3.8.x
 				// profile.setEnableNativeEvents(false);
 
