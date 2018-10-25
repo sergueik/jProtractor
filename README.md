@@ -68,8 +68,8 @@ return angular.element(element).scope().$eval(expression)
 ```
 evaluates an Angular expression in the context of a given element.
 
-These are 
-implemented in a form of Javascript snippets, one file per method, 
+These are
+implemented in a form of Javascript snippets, one file per method,
 borrowed from __Protractor__  project's [clientsidescripts.js](https://github.com/angular/protractor/blob/master/lib/clientsidescripts.js)
 and can be found in the `src/main/java/resources` directory:
 ```bash
@@ -196,14 +196,14 @@ Certain tests ( e.g. involving `NgBy.selectedOption()` ) currently fail under [t
 
 |                      |              |
 |----------------------|--------------|
-| SELENIUM_VERSION     | __3.x__ ,  __2.53.1__ |
+| SELENIUM_VERSION     |   __2.53.1__ |
 | FIREFOX_VERSION      | __45.0.1__   |
 | CHROME_VERSION       | __56.0.X__   |
 | CHROMEDRIVER_VERSION | __2.29__     |
 
 |                      |              |
 |----------------------|--------------|
-| SELENIUM_VERSION     | __3.2.0__    |
+| SELENIUM_VERSION     | __3.8.0__    |
 | FIREFOX_VERSION      | __52.0__     |
 | GECKODRIVER_VERSION  | __0.15__     |
 | CHROME_VERSION       | __57.0.X__   |
@@ -348,6 +348,25 @@ import com.jprotractor.NgWebElement;
   - [angular/protractor](https://github.com/angular/protractor)
   - [bbaia/protractor-net](https://github.com/bbaia/protractor-net)
   - [sergueik/protractor-net](https://github.com/sergueik/powershell_selenium/tree/master/csharp/protractor-net)
+
+### Note
+
+The [ngWebDriver](https://github.com/paul-hammant/ngWebDriver) and the __jProtractor__ projects are very similar in that they construct Java classes wrapping avascript Protractor methods.
+The internal class hierachy is different, of course.
+
+It appears easier to construct the Page object factory `By` annotations (interfaces) describing the
+__jProtractor__ library methods than to do the same with the __ngWebDriver__.
+
+The other difference is that __jProtractor__ splits the original javascript helper libary into
+small chunks and during execution of a `find` method sends only the specific fragment where the locator in question is implements,
+to the  browser.  The __ngWebDriver__ always sends the whole library.
+
+This also allows one to patch the individual api (it was important a few years ago) and adding new api (currently, only one such API was added, the `selectedRepeaterOption`. This of course comes at a
+higher cost of integrating the "upstream" changes, but the genuine Protracror project is
+no longer evolving as quickly as it used to.
+
+__ngWebDriver__ uses it unmodified.
+  One
 
 ### Authors
 [Carlos Alexandro Becker](caarlos0@gmail.com)
