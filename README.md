@@ -348,6 +348,9 @@ import com.jprotractor.NgWebElement;
   - [angular/protractor](https://github.com/angular/protractor)
   - [bbaia/protractor-net](https://github.com/bbaia/protractor-net)
   - [sergueik/protractor-net](https://github.com/sergueik/powershell_selenium/tree/master/csharp/protractor-net)
+  - [symonk/automation-framework-java-angular-cucumber](https://github.com/symonk/automation-framework-java-angular-cucumber)
+  - [sergueik/jprotractor_cucumber](https://github.com/sergueik/jprotractor_cucumber)
+  - [henrrich/jpagefactory](https://github.com/henrrich/jpagefactory)
 
 ### Note
 
@@ -366,7 +369,6 @@ higher cost of integrating the "upstream" changes, but the genuine Protracror pr
 no longer evolving as quickly as it used to.
 
 __ngWebDriver__ uses it unmodified.
-  One
 
 ### Authors
 [Carlos Alexandro Becker](caarlos0@gmail.com)
