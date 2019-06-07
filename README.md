@@ -288,7 +288,19 @@ For example of [Keyword-Driven Framework](http://toolsqa.com/selenium-webdriver/
      <artifactId>jprotractor</artifactId>
      <version>${jprotractor.version}</version>
      <scope>system</scope>
+     <!-- 
      <systemPath>${project.basedir}/src/main/resources/jprotractor-${jprotractor.version}.jar</systemPath>
+     -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.seleniumhq.selenium</groupId>
+          <artifactId>selenium-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.seleniumhq.selenium</groupId>
+          <artifactId>selenium-server</artifactId>
+        </exclusion>
+      </exclusions>
 </dependency>
 </dependencies>
 ```
